@@ -6,6 +6,7 @@ import (
 	"spotify/repositories"
 )
 
+//go:generate mockgen -destination=./mocks/mock_$GOFILE -source=$GOFILE -package=mocks
 type SongService interface {
 	GetAllSong() ([]dto.Song, common.SubReturnCode)
 }

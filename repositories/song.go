@@ -6,6 +6,7 @@ import (
 	"spotify/models"
 )
 
+//go:generate mockgen -destination=./mocks/mock_$GOFILE -source=$GOFILE -package=mocks
 type SongRepository interface {
 	GetAllSong() ([]models.Songs, error)
 	GetSongByID(ctx context.Context, id uint) (models.Songs, error)
