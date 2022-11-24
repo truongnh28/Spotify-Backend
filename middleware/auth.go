@@ -34,7 +34,7 @@ func HTTPAuthentication(ctx *gin.Context) {
 	}
 	actor := dt.(*dto.Account)
 	glog.Infoln("checkPermissionChange", actor)
-	if checkPermissionChange(ctx, actor) {
+	if checkPermissionChange(actor) {
 		glog.Infoln("account is change permission", true)
 		ctx.AbortWithStatus(401)
 		return
@@ -45,7 +45,7 @@ func HTTPAuthentication(ctx *gin.Context) {
 	ctx.Next()
 }
 
-func checkPermissionChange(ctx context.Context, acc *dto.Account) bool {
+func checkPermissionChange(acc *dto.Account) bool {
 	dt, err := cache.GetServerCacheInstance(common.SERVERCACHE).GetCode(fmt.Sprintf("%s:%s", common.PrefixLoginCode, acc.Username))
 	if err != nil || len(dt) == 0 {
 		return false

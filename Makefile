@@ -19,6 +19,8 @@ ut:
 coverage: test
 	@go tool cover -html=test-results/.testcoverage.txt -o test-results/coverage.html && open test-results/coverage.html
 
+run:
+	cd cmd && go run main.go
 
 ##@ Development
 

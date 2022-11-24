@@ -17,6 +17,7 @@ import (
 	"spotify/cache"
 	"spotify/config"
 	v1 "spotify/controller/v1"
+	"spotify/helper"
 	"spotify/middleware"
 	"spotify/models"
 	"spotify/repositories"
@@ -37,12 +38,19 @@ func main() {
 	if err != nil {
 		panic(fmt.Errorf("fatal error config file: %s", err))
 	}
+	// Init instance
+	jedis := getRedisClient()
 	//get config
 	db := getDatabaseConnector()
 	// Init Repository
 	songRepo := repositories.NewSongRepository(db)
+	accountRepository := repositories.NewAccountRepository(db)
 	// Init Service
+	//memoryCache := cache.NewMemoryCache()
+	redisCache := cache.NewServerCacheRedis(jedis)
 	songService := services.NewSongService(songRepo)
+	authenService := services.NewAuthenService(helper.GetJWTInstance(), redisCache, accountRepository, config.AuthConfig())
+	accountService := services.NewAccountService(accountRepository, redisCache, config.AuthConfig())
 	// Init w
 	gin.SetMode(gin.TestMode)
 	router := gin.Default()
@@ -59,6 +67,8 @@ func main() {
 	v1.InitRoutes(
 		api,
 		songService,
+		authenService,
+		accountService,
 	)
 	glog.Infof("runing on port: %d ", 8080)
 	err = router.Run(":8080")
@@ -113,7 +123,7 @@ func getDatabaseConnector() *gorm.DB {
 		models.Artists{},
 		models.Interactions{},
 		models.PlayListSongs{},
-		models.Users{},
+		models.Accounts{},
 	)
 	sqlDB, err := db.DB()
 	if err != nil {

@@ -30,7 +30,7 @@ type Interactions struct {
 	*gorm.Model
 	InteractionID uint      `gorm:"column:interaction_ID"`
 	UserID        uint      `gorm:"column:user_ID"`
-	Users         Users     `gorm:"foreignKey:UserID;references:ID"`
+	Users         Accounts  `gorm:"foreignKey:Id;references:ID"`
 	SongID        uint      `gorm:"column:song_ID"`
 	Songs         Songs     `gorm:"foreignKey:SongID;references:ID"`
 	Liked         uint      `gorm:"column:liked"`
@@ -41,20 +41,22 @@ type Interactions struct {
 
 type PlayLists struct {
 	*gorm.Model
-	PlayListID uint      `gorm:"column:playlist_ID"`
-	Name       string    `gorm:"column:name"`
-	CreateAt   time.Time `gorm:"column:create_at"`
-	UploadAt   time.Time `gorm:"column:upload_at"`
-	CoverImg   string    `gorm:"column:cover_img"`
-	UserID     uint      `gorm:"column:user_ID"`
-	Users      Users     `gorm:"foreignKey:UserID;references:ID"`
+	Id        uint      `gorm:"column:id"`
+	Name      string    `gorm:"column:name"`
+	CreateAt  time.Time `gorm:"column:create_at"`
+	UploadAt  time.Time `gorm:"column:upload_at"`
+	DeletedAt time.Time `gorm:"column:deleted_at"`
+	CoverImg  string    `gorm:"column:cover_img"`
+	UserID    uint      `gorm:"column:user_ID"`
+	Users     Accounts  `gorm:"foreignKey:Id;references:ID"`
 }
 
 type PlayListSongs struct {
+	*gorm.Model
 	SongID     uint      `gorm:"column:song_ID"`
 	Songs      Songs     `gorm:"foreignKey:SongID;references:ID"`
 	PlayListID uint      `gorm:"column:playlist_ID"`
-	PlayLists  PlayLists `gorm:"foreignKey:PlayListID;references:ID"`
+	PlayLists  PlayLists `gorm:"foreignKey:Id;references:ID"`
 }
 
 type Songs struct {
@@ -73,20 +75,50 @@ type Songs struct {
 	YoutubeLink string    `gorm:"column:youtube_link"`
 }
 
-type Users struct {
+type Accounts struct {
 	*gorm.Model
-	UserID        uint      `gorm:"column:user_ID"`
-	Name          string    `gorm:"column:name"`
-	Email         string    `gorm:"column:email"`
-	Password      string    `gorm:"column:password"`
-	IsAdmin       uint      `gorm:"column:is_admin"`
-	Preferences   string    `gorm:"column:preferences"`
-	RememberToken string    `gorm:"column:remember_token"`
-	CreateAt      time.Time `gorm:"column:create_at"`
-	UploadAt      time.Time `gorm:"column:upload_at"`
-	Role          string    `gorm:"column:role"`
-	GroupType     uint      `gorm:"column:group_type"`
-	Status        string    `gorm:"column:status"`
+	Id        uint          `gorm:"column:id"`
+	UserName  string        `gorm:"index:username_idx_uni,unique"`
+	Email     string        `gorm:"column:email"`
+	Password  string        `gorm:"column:password"`
+	CreatedAt time.Time     `gorm:"column:created_at"`
+	UpdatedAt time.Time     `gorm:"column:updated_at"`
+	DeletedAt time.Time     `gorm:"column:deleted_at"`
+	Role      AccountRole   `gorm:"column:role"`
+	GroupType uint          `gorm:"column:group_type"`
+	Status    AccountStatus `gorm:"column:status"`
+}
+
+type AccountStatus string
+
+const (
+	Active  AccountStatus = "Active"
+	Blocked AccountStatus = "Blocked"
+)
+
+type AccountRole string
+
+const (
+	SuperAdmin AccountRole = "SuperAdmin"
+	Admin      AccountRole = "Admin"
+	User       AccountRole = "User"
+)
+
+var (
+	priority = map[AccountRole]int{
+		SuperAdmin: 0,
+		Admin:      -1,
+		User:       -2,
+	}
+)
+
+func (a AccountRole) CanChange(ar AccountRole) bool {
+	return priority[a] > priority[ar]
+}
+
+func (a AccountRole) IsValid() bool {
+	_, ok := priority[a]
+	return ok
 }
 
 // Status enum
@@ -127,6 +159,6 @@ func (Songs) TableName() string {
 	return "songs"
 }
 
-func (Users) TableName() string {
-	return "users"
+func (Accounts) TableName() string {
+	return "accounts"
 }
