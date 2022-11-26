@@ -1,6 +1,7 @@
 package services
 
 import (
+	"github.com/golang/glog"
 	"spotify/dto"
 	"spotify/helper/common"
 	"spotify/repositories"
@@ -25,6 +26,7 @@ func (s *songServiceImpl) GetAllSong() ([]dto.Song, common.SubReturnCode) {
 	var resp = make([]dto.Song, 0)
 	songs, err := s.songRepo.GetAllSong()
 	if err != nil {
+		glog.Infoln("GetAllSong service err: ", err)
 		return resp, common.SystemError
 	}
 	for _, val := range songs {

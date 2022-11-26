@@ -8,7 +8,7 @@ type Song struct {
 	AlbumID     uint      `json:"album_id"`
 	ArtistID    uint      `json:"artist_id"`
 	Lyrics      string    `json:"lyrics"`
-	Length      time.Time `json:"length"`
+	Length      uint      `json:"length"`
 	TrackNumber uint      `json:"track_number"`
 	CreateAt    time.Time `json:"create_at"`
 	UploadAt    time.Time `json:"upload_at"`

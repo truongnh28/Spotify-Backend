@@ -7,13 +7,14 @@ import (
 
 type Albums struct {
 	*gorm.Model
-	AlbumID  uint      `gorm:"column:album_ID"`
-	Name     string    `gorm:"column:name"`
-	ArtistID uint      `gorm:"column:artist_ID"`
-	Artists  Artists   `gorm:"foreignKey:ArtistID;references:ID"`
-	CreateAt time.Time `gorm:"column:create_at"`
-	UploadAt time.Time `gorm:"column:upload_at"`
-	CoverImg string    `gorm:"column:cover_img"`
+	AlbumID   uint      `gorm:"column:album_ID"`
+	Name      string    `gorm:"column:name"`
+	ArtistID  uint      `gorm:"column:artist_ID"`
+	Artists   Artists   `gorm:"foreignKey:ArtistID;references:ID"`
+	CreateAt  time.Time `gorm:"column:create_at"`
+	UploadAt  time.Time `gorm:"column:upload_at"`
+	DeletedAt time.Time `gorm:"column:deleted_at"`
+	CoverImg  string    `gorm:"column:cover_img"`
 }
 
 type Artists struct {
@@ -23,6 +24,7 @@ type Artists struct {
 	Description string    `gorm:"column:description"`
 	CreateAt    time.Time `gorm:"column:create_at"`
 	UploadAt    time.Time `gorm:"column:upload_at"`
+	DeletedAt   time.Time `gorm:"column:deleted_at"`
 	CoverImg    string    `gorm:"column:cover_img"`
 }
 
@@ -37,6 +39,7 @@ type Interactions struct {
 	PlayDuration  time.Time `gorm:"column:play_duration"`
 	CreateAt      time.Time `gorm:"column:create_at"`
 	UploadAt      time.Time `gorm:"column:upload_at"`
+	DeletedAt     time.Time `gorm:"column:deleted_at"`
 }
 
 type PlayLists struct {
@@ -68,10 +71,11 @@ type Songs struct {
 	ArtistID    uint      `gorm:"column:artist_ID"`
 	Artists     Artists   `gorm:"foreignKey:ArtistID;references:ID"`
 	Lyrics      string    `gorm:"column:lyrics"`
-	Length      time.Time `gorm:"column:length"`
+	Length      uint      `gorm:"column:length"`
 	TrackNumber uint      `gorm:"column:track_number"`
 	CreateAt    time.Time `gorm:"column:create_at"`
 	UploadAt    time.Time `gorm:"column:upload_at"`
+	DeletedAt   time.Time `gorm:"column:deleted_at"`
 	YoutubeLink string    `gorm:"column:youtube_link"`
 }
 

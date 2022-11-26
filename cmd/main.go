@@ -158,7 +158,7 @@ func getLDAPConfig() *config.LDAP {
 
 func extractConfigPath() (string, string) {
 	var (
-		defaultConfig = "config/local.yaml"
+		defaultConfig = "config/local.yml"
 		cp            = os.Getenv("CONFIG_PATH")
 	)
 	if len(cp) > 0 {
