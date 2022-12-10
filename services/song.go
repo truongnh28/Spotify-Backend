@@ -38,8 +38,6 @@ func (s *songServiceImpl) GetAllSong() ([]dto.Song, common.SubReturnCode) {
 			Lyrics:      val.Lyrics,
 			Length:      val.Length,
 			TrackNumber: val.TrackNumber,
-			CreateAt:    val.CreateAt,
-			UploadAt:    val.UploadAt,
 			YoutubeLink: val.YoutubeLink,
 		})
 	}
