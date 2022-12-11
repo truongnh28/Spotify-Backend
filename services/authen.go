@@ -45,7 +45,7 @@ func (a *authenServiceImpl) checkUserFromDB(ctx context.Context, userInfo dto.Lo
 			return nil, errors.New("account has been blocked")
 		}
 	} else {
-		if err := a.accountRepo.Create(ctx, models.Accounts{
+		if err := a.accountRepo.Create(ctx, models.Account{
 			UserName: userInfo.Username,
 			Status:   models.Active,
 			Role:     models.Admin,

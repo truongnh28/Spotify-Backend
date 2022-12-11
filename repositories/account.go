@@ -8,21 +8,21 @@ import (
 
 //go:generate mockgen -destination=./mocks/mock_$GOFILE -source=$GOFILE -package=mocks
 type AccountRepository interface {
-	GetByDomain(likeDomain string) ([]*models.Accounts, error)
-	Create(ctx context.Context, acc models.Accounts) error
-	FindByUserName(ctx context.Context, username string) (models.Accounts, error)
-	UpdateByUsername(ctx context.Context, username string, acc models.Accounts) (int64, error)
+	GetByDomain(likeDomain string) ([]*models.Account, error)
+	Create(ctx context.Context, acc models.Account) error
+	FindByUserName(ctx context.Context, username string) (models.Account, error)
+	UpdateByUsername(ctx context.Context, username string, acc models.Account) (int64, error)
 }
 
 type accountRepositoryImpl struct {
 	database *gorm.DB
 }
 
-func (a *accountRepositoryImpl) GetByDomain(name string) ([]*models.Accounts, error) {
-	userProfiles := make([]*models.Accounts, 0)
+func (a *accountRepositoryImpl) GetByDomain(name string) ([]*models.Account, error) {
+	userProfiles := make([]*models.Account, 0)
 	database := a.database
 
-	database = database.Model(models.Accounts{})
+	database = database.Model(models.Account{})
 
 	if name != "" {
 		database = database.Where("user_name like ?", "%"+name+"%")
@@ -34,28 +34,28 @@ func (a *accountRepositoryImpl) GetByDomain(name string) ([]*models.Accounts, er
 	return userProfiles, nil
 }
 
-func (a *accountRepositoryImpl) Create(ctx context.Context, acc models.Accounts) error {
+func (a *accountRepositoryImpl) Create(ctx context.Context, acc models.Account) error {
 	var (
 		db = a.database.WithContext(ctx)
 	)
-	return db.Model(models.Accounts{}).Create(&acc).Error
+	return db.Model(models.Account{}).Create(&acc).Error
 }
 
-func (a *accountRepositoryImpl) FindByUserName(ctx context.Context, username string) (models.Accounts, error) {
+func (a *accountRepositoryImpl) FindByUserName(ctx context.Context, username string) (models.Account, error) {
 	var (
-		users models.Accounts
+		users models.Account
 		db    = a.database.WithContext(ctx)
 	)
-	err := db.Model(models.Accounts{}).First(&users).Error
+	err := db.Model(models.Account{}).First(&users).Error
 	if err != nil {
-		return models.Accounts{}, err
+		return models.Account{}, err
 	}
 	return users, nil
 }
 
-func (a *accountRepositoryImpl) UpdateByUsername(ctx context.Context, username string, acc models.Accounts) (int64, error) {
+func (a *accountRepositoryImpl) UpdateByUsername(ctx context.Context, username string, acc models.Account) (int64, error) {
 	db := a.database.WithContext(ctx)
-	result := db.Model(models.Accounts{}).Select("status", "role").Where("user_name = ?", username).Updates(acc)
+	result := db.Model(models.Account{}).Select("status", "role").Where("user_name = ?", username).Updates(acc)
 	return result.RowsAffected, result.Error
 }
 

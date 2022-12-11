@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"github.com/golang/glog"
 	"spotify/dto"
 	"spotify/helper/common"
@@ -9,7 +10,10 @@ import (
 
 //go:generate mockgen -destination=./mocks/mock_$GOFILE -source=$GOFILE -package=mocks
 type SongService interface {
-	GetAllSong() ([]dto.Song, common.SubReturnCode)
+	GetAllSong(ctx context.Context) ([]dto.Song, common.SubReturnCode)
+	GetSongByID(ctx context.Context, id uint) (dto.Song, common.SubReturnCode)
+	GetSongByName(ctx context.Context, name string) ([]dto.Song, common.SubReturnCode)
+	GetSongByPlayListID(ctx context.Context, id uint) ([]dto.Song, common.SubReturnCode)
 }
 
 func NewSongService(songRepo repositories.SongRepository) SongService {
@@ -22,9 +26,9 @@ type songServiceImpl struct {
 	songRepo repositories.SongRepository
 }
 
-func (s *songServiceImpl) GetAllSong() ([]dto.Song, common.SubReturnCode) {
+func (s *songServiceImpl) GetAllSong(ctx context.Context) ([]dto.Song, common.SubReturnCode) {
 	var resp = make([]dto.Song, 0)
-	songs, err := s.songRepo.GetAllSong()
+	songs, err := s.songRepo.GetAllSong(ctx)
 	if err != nil {
 		glog.Infoln("GetAllSong service err: ", err)
 		return resp, common.SystemError
@@ -37,8 +41,78 @@ func (s *songServiceImpl) GetAllSong() ([]dto.Song, common.SubReturnCode) {
 			ArtistID:    val.ArtistID,
 			Lyrics:      val.Lyrics,
 			Length:      val.Length,
-			TrackNumber: val.TrackNumber,
+			URL:         val.URL,
 			YoutubeLink: val.YoutubeLink,
+		})
+	}
+	return resp, common.OK
+}
+
+func (s *songServiceImpl) GetSongByID(ctx context.Context, id uint) (dto.Song, common.SubReturnCode) {
+	var (
+		resp = dto.Song{}
+	)
+	song, err := s.songRepo.GetSongByID(ctx, id)
+	if err != nil {
+		glog.Infoln("GetSongByID service err: ", err)
+		return resp, common.SystemError
+	}
+	resp = dto.Song{
+		SongID:      song.SongID,
+		Name:        song.Name,
+		AlbumID:     song.AlbumID,
+		ArtistID:    song.ArtistID,
+		Lyrics:      song.Lyrics,
+		Length:      song.Length,
+		URL:         song.URL,
+		YoutubeLink: song.YoutubeLink,
+	}
+	return resp, common.OK
+}
+
+func (s *songServiceImpl) GetSongByName(ctx context.Context, name string) ([]dto.Song, common.SubReturnCode) {
+	var (
+		resp = make([]dto.Song, 0)
+	)
+	songs, err := s.songRepo.GetSongByName(ctx, name)
+	if err != nil {
+		glog.Infoln("GetSongByName service err: ", err)
+		return resp, common.SystemError
+	}
+	for _, song := range songs {
+		resp = append(resp, dto.Song{
+			SongID:      song.SongID,
+			Name:        song.Name,
+			AlbumID:     song.AlbumID,
+			ArtistID:    song.ArtistID,
+			Lyrics:      song.Lyrics,
+			Length:      song.Length,
+			URL:         song.URL,
+			YoutubeLink: song.YoutubeLink,
+		})
+	}
+	return resp, common.OK
+}
+
+func (s *songServiceImpl) GetSongByPlayListID(ctx context.Context, id uint) ([]dto.Song, common.SubReturnCode) {
+	var (
+		resp = make([]dto.Song, 0)
+	)
+	songs, err := s.songRepo.GetSongByPlayListID(ctx, id)
+	if err != nil {
+		glog.Infoln("GetSongByPlayListID service err: ", err)
+		return resp, common.SystemError
+	}
+	for _, song := range songs {
+		resp = append(resp, dto.Song{
+			SongID:      song.SongID,
+			Name:        song.Name,
+			AlbumID:     song.AlbumID,
+			ArtistID:    song.ArtistID,
+			Lyrics:      song.Lyrics,
+			Length:      song.Length,
+			URL:         song.URL,
+			YoutubeLink: song.YoutubeLink,
 		})
 	}
 	return resp, common.OK

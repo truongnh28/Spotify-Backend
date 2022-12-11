@@ -35,7 +35,7 @@ func (a *AccountServiceImpl) FindByUserName(ctx context.Context, username string
 
 func (a *AccountServiceImpl) Update(ctx context.Context, username string, req dto.UpdateAccountRequest) common.SubReturnCode {
 	glog.Infoln("Update request: ", req)
-	rowsAffected, err := a.accountRepository.UpdateByUsername(ctx, username, models.Accounts{
+	rowsAffected, err := a.accountRepository.UpdateByUsername(ctx, username, models.Account{
 		Status: models.AccountStatus(req.Status),
 		Role:   models.AccountRole(req.Role),
 	})

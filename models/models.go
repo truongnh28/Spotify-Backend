@@ -5,19 +5,19 @@ import (
 	"time"
 )
 
-type Albums struct {
+type Album struct {
 	*gorm.Model
 	AlbumID    uint      `gorm:"column:id"`
 	Name       string    `gorm:"column:name"`
 	ArtistID   uint      `gorm:"column:artist_ID"`
-	Artists    Artists   `gorm:"foreignKey:id;references:id"`
+	Artists    Artist    `gorm:"foreignKey:id;references:id"`
 	CreatedAt  time.Time `gorm:"column:created_at"`
 	UploadedAt time.Time `gorm:"column:uploaded_at"`
 	DeletedAt  time.Time `gorm:"column:deleted_at"`
 	CoverImg   string    `gorm:"column:cover_img"`
 }
 
-type Artists struct {
+type Artist struct {
 	*gorm.Model
 	ArtistID    uint      `gorm:"column:id"`
 	Name        string    `gorm:"column:name"`
@@ -28,13 +28,13 @@ type Artists struct {
 	CoverImg    string    `gorm:"column:cover_img"`
 }
 
-type Interactions struct {
+type Interaction struct {
 	*gorm.Model
 	InteractionID uint      `gorm:"column:id"`
 	UserID        uint      `gorm:"column:user_ID"`
-	Users         Accounts  `gorm:"foreignKey:id;references:id"`
+	Users         Account   `gorm:"foreignKey:id;references:id"`
 	SongID        uint      `gorm:"column:song_ID"`
-	Songs         Songs     `gorm:"foreignKey:song_ID;references:id"`
+	Songs         Song      `gorm:"foreignKey:id;references:id"`
 	Liked         uint      `gorm:"column:liked"`
 	PlayDuration  time.Time `gorm:"column:play_duration"`
 	CreatedAt     time.Time `gorm:"column:created_at"`
@@ -42,7 +42,7 @@ type Interactions struct {
 	DeletedAt     time.Time `gorm:"column:deleted_at"`
 }
 
-type PlayLists struct {
+type PlayList struct {
 	*gorm.Model
 	PlayListID uint      `gorm:"column:id"`
 	Name       string    `gorm:"column:name"`
@@ -51,35 +51,35 @@ type PlayLists struct {
 	DeletedAt  time.Time `gorm:"column:deleted_at"`
 	CoverImg   string    `gorm:"column:cover_img"`
 	UserID     uint      `gorm:"column:user_ID"`
-	Users      Accounts  `gorm:"foreignKey:Id;references:id"`
+	Users      Account   `gorm:"foreignKey:id;references:id"`
 }
 
-type PlayListSongs struct {
+type PlayListSong struct {
 	*gorm.Model
-	SongID     uint      `gorm:"column:song_ID"`
-	Songs      Songs     `gorm:"foreignKey:SongID;references:id"`
-	PlayListID uint      `gorm:"column:playlist_ID"`
-	PlayLists  PlayLists `gorm:"foreignKey:Id;references:id"`
+	SongID     uint     `gorm:"column:song_ID"`
+	Songs      Song     `gorm:"foreignKey:id;references:id"`
+	PlayListID uint     `gorm:"column:playlist_ID"`
+	PlayLists  PlayList `gorm:"foreignKey:id;references:id"`
 }
 
-type Songs struct {
+type Song struct {
 	*gorm.Model
 	SongID      uint      `gorm:"column:id"`
 	Name        string    `gorm:"column:name"`
 	AlbumID     uint      `gorm:"column:album_ID"`
-	Albums      Albums    `gorm:"foreignKey:AlbumID;references:id"`
+	Albums      Album     `gorm:"foreignKey:id;references:id"`
 	ArtistID    uint      `gorm:"column:artist_ID"`
-	Artists     Artists   `gorm:"foreignKey:ArtistID;references:id"`
+	Artists     Artist    `gorm:"foreignKey:id;references:id"`
 	Lyrics      string    `gorm:"column:lyrics"`
 	Length      uint      `gorm:"column:length"`
-	TrackNumber uint      `gorm:"column:track_number"`
+	URL         string    `gorm:"column:url"`
 	CreatedAt   time.Time `gorm:"column:created_at"`
 	UploadedAt  time.Time `gorm:"column:uploaded_at"`
 	DeletedAt   time.Time `gorm:"column:deleted_at"`
 	YoutubeLink string    `gorm:"column:youtube_link"`
 }
 
-type Accounts struct {
+type Account struct {
 	*gorm.Model
 	Id        uint          `gorm:"column:id"`
 	UserName  string        `gorm:"index:username_idx_uni,unique"`
@@ -129,30 +129,30 @@ type Table interface {
 	TableName() string
 }
 
-func (Albums) TableName() string {
+func (Album) TableName() string {
 	return "albums"
 }
 
-func (Artists) TableName() string {
+func (Artist) TableName() string {
 	return "artists"
 }
 
-func (Interactions) TableName() string {
+func (Interaction) TableName() string {
 	return "interactions"
 }
 
-func (PlayLists) TableName() string {
+func (PlayList) TableName() string {
 	return "playlists"
 }
 
-func (PlayListSongs) TableName() string {
+func (PlayListSong) TableName() string {
 	return "playlist_songs"
 }
 
-func (Songs) TableName() string {
+func (Song) TableName() string {
 	return "songs"
 }
 
-func (Accounts) TableName() string {
+func (Account) TableName() string {
 	return "accounts"
 }

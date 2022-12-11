@@ -43,14 +43,16 @@ func main() {
 	//get config
 	db := getDatabaseConnector()
 	// Init Repository
-	songRepo := repositories.NewSongRepository(db)
+	songRepository := repositories.NewSongRepository(db)
 	accountRepository := repositories.NewAccountRepository(db)
+	playListRepository := repositories.NewPlayListRepository(db)
 	// Init Service
 	//memoryCache := cache.NewMemoryCache()
 	redisCache := cache.NewServerCacheRedis(jedis)
-	songService := services.NewSongService(songRepo)
+	songService := services.NewSongService(songRepository)
 	authenService := services.NewAuthenService(helper.GetJWTInstance(), redisCache, accountRepository, config.AuthConfig())
 	accountService := services.NewAccountService(accountRepository, redisCache, config.AuthConfig())
+	playListService := services.NewPlayListService(playListRepository)
 	// Init w
 	gin.SetMode(gin.TestMode)
 	router := gin.Default()
@@ -69,9 +71,10 @@ func main() {
 		songService,
 		authenService,
 		accountService,
+		playListService,
 	)
-	glog.Infof("runing on port: %d ", 8080)
-	err = router.Run(":8080")
+	glog.Infof("runing on port: %d ", 8082)
+	err = router.Run(":8082")
 	if err != nil {
 		panic(fmt.Sprintf("Cannot start web application with error: %v", err))
 	}
@@ -117,13 +120,13 @@ func getDatabaseConnector() *gorm.DB {
 	}
 
 	db.AutoMigrate(
-		models.Songs{},
-		models.Albums{},
-		models.PlayLists{},
-		models.Artists{},
-		models.Interactions{},
-		models.PlayListSongs{},
-		models.Accounts{},
+		models.Song{},
+		models.Album{},
+		models.PlayList{},
+		models.Artist{},
+		models.Interaction{},
+		models.PlayListSong{},
+		models.Account{},
 	)
 	sqlDB, err := db.DB()
 	if err != nil {
