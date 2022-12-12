@@ -36,7 +36,6 @@ type Interaction struct {
 	SongID        uint      `gorm:"column:song_ID"`
 	Songs         Song      `gorm:"foreignKey:id;references:id"`
 	Liked         uint      `gorm:"column:liked"`
-	PlayDuration  time.Time `gorm:"column:play_duration"`
 	CreatedAt     time.Time `gorm:"column:created_at"`
 	UploadedAt    time.Time `gorm:"column:uploaded_at"`
 	DeletedAt     time.Time `gorm:"column:deleted_at"`
