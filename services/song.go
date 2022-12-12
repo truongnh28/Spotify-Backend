@@ -16,6 +16,7 @@ type SongService interface {
 	GetSongByPlayListID(ctx context.Context, playListId uint) ([]dto.Song, common.SubReturnCode)
 	GetSongByArtistID(ctx context.Context, artistId uint) ([]dto.Song, common.SubReturnCode)
 	GetSongByAlbumID(ctx context.Context, albumId uint) ([]dto.Song, common.SubReturnCode)
+	GetSongLikedByUserID(ctx context.Context, userId uint) ([]dto.Song, common.SubReturnCode)
 }
 
 func NewSongService(songRepo repositories.SongRepository) SongService {
@@ -149,6 +150,30 @@ func (s *songServiceImpl) GetSongByAlbumID(ctx context.Context, albumId uint) ([
 		resp = make([]dto.Song, 0)
 	)
 	songs, err := s.songRepo.GetSongByAlbumID(ctx, albumId)
+	if err != nil {
+		glog.Infoln("GetSongByAlbumID service err: ", err)
+		return resp, common.SystemError
+	}
+	for _, song := range songs {
+		resp = append(resp, dto.Song{
+			SongID:      song.SongID,
+			Name:        song.Name,
+			AlbumID:     song.AlbumID,
+			ArtistID:    song.ArtistID,
+			Lyrics:      song.Lyrics,
+			Length:      song.Length,
+			URL:         song.URL,
+			YoutubeLink: song.YoutubeLink,
+		})
+	}
+	return resp, common.OK
+}
+
+func (s *songServiceImpl) GetSongLikedByUserID(ctx context.Context, userId uint) ([]dto.Song, common.SubReturnCode) {
+	var (
+		resp = make([]dto.Song, 0)
+	)
+	songs, err := s.songRepo.GetSongLikedByUserID(ctx, userId)
 	if err != nil {
 		glog.Infoln("GetSongByAlbumID service err: ", err)
 		return resp, common.SystemError

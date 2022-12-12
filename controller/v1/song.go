@@ -144,3 +144,26 @@ func (s *SongHandlerImpl) GetSongByAlbumID(context *gin.Context) {
 	out.Songs = response
 	helper.BuildResponseByReturnCode(out, common.Success, common.OK)
 }
+
+func (s *SongHandlerImpl) GetSongLikedByUserID(context *gin.Context) {
+	var (
+		out = &dto.SongResponse{}
+	)
+	defer func() {
+		context.JSON(200, out)
+	}()
+	ids := context.Param("id")
+	id, err := strconv.Atoi(ids)
+	if err != nil {
+		glog.Errorln("parse id string to int err: ", err)
+		helper.BuildResponseByReturnCode(out, common.Fail, common.SystemError)
+		return
+	}
+	response, code := s.songService.GetSongLikedByUserID(context, uint(id))
+	if code != common.OK {
+		helper.BuildResponseByReturnCode(out, common.Fail, code)
+		return
+	}
+	out.Songs = response
+	helper.BuildResponseByReturnCode(out, common.Success, common.OK)
+}

@@ -64,7 +64,7 @@ func (s *playlistRepositoryImpl) GetPlayListByUserID(ctx context.Context, userId
 		db        = s.database.WithContext(ctx)
 	)
 
-	err := db.Model(&models.PlayList{}).Joins("inner join accounts on accounts.artist_ID = playlists.id").Where("accounts.id = ?", userId).Find(&playLists).Error
+	err := db.Model(&models.PlayList{}).Joins("inner join accounts on accounts.artist_id = playlists.id").Where("accounts.id = ?", userId).Find(&playLists).Error
 	if err != nil {
 		glog.Errorln("GetPlayListByArtistID Repository err: ", err)
 		return playLists, err
