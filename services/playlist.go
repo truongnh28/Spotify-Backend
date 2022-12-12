@@ -13,6 +13,7 @@ type PlayListService interface {
 	GetAllPlayList(ctx context.Context) ([]dto.PlayList, common.SubReturnCode)
 	GetPlayListByID(ctx context.Context, id uint) (dto.PlayList, common.SubReturnCode)
 	GetPlayListByName(ctx context.Context, name string) ([]dto.PlayList, common.SubReturnCode)
+	GetPlayListByUserID(ctx context.Context, userId uint) ([]dto.PlayList, common.SubReturnCode)
 }
 
 func NewPlayListService(playListRepo repositories.PlayListRepository) PlayListService {
@@ -68,6 +69,26 @@ func (s *playListServiceImpl) GetPlayListByName(ctx context.Context, name string
 	playLists, err := s.playListRepo.GetPlayListByName(ctx, name)
 	if err != nil {
 		glog.Infoln("GetPlayListByName service err: ", err)
+		return resp, common.SystemError
+	}
+	for _, playList := range playLists {
+		resp = append(resp, dto.PlayList{
+			PlayListID: playList.PlayListID,
+			Name:       playList.Name,
+			CoverImg:   playList.CoverImg,
+			UserID:     playList.UserID,
+		})
+	}
+	return resp, common.OK
+}
+
+func (s *playListServiceImpl) GetPlayListByUserID(ctx context.Context, userId uint) ([]dto.PlayList, common.SubReturnCode) {
+	var (
+		resp = make([]dto.PlayList, 0)
+	)
+	playLists, err := s.playListRepo.GetPlayListByUserID(ctx, userId)
+	if err != nil {
+		glog.Infoln("GetPlayListByUserID service err: ", err)
 		return resp, common.SystemError
 	}
 	for _, playList := range playLists {

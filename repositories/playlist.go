@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"github.com/golang/glog"
 	"gorm.io/gorm"
 	"spotify/models"
 )
@@ -11,6 +12,7 @@ type PlayListRepository interface {
 	GetAllPlayList(ctx context.Context) ([]models.PlayList, error)
 	GetPlayListByID(ctx context.Context, id uint) (models.PlayList, error)
 	GetPlayListByName(ctx context.Context, name string) ([]models.PlayList, error)
+	GetPlayListByUserID(ctx context.Context, userId uint) ([]models.PlayList, error)
 }
 
 type playlistRepositoryImpl struct {
@@ -51,6 +53,20 @@ func (s *playlistRepositoryImpl) GetPlayListByName(ctx context.Context, name str
 	)
 	err := db.Model(models.PlayList{}).Where("name like ?", "%"+name+"%").Find(&playLists).Error
 	if err != nil {
+		return playLists, err
+	}
+	return playLists, nil
+}
+
+func (s *playlistRepositoryImpl) GetPlayListByUserID(ctx context.Context, userId uint) ([]models.PlayList, error) {
+	var (
+		playLists = make([]models.PlayList, 0)
+		db        = s.database.WithContext(ctx)
+	)
+
+	err := db.Model(&models.PlayList{}).Joins("inner join accounts on accounts.artist_ID = playlists.id").Where("accounts.id = ?", userId).Find(&playLists).Error
+	if err != nil {
+		glog.Errorln("GetPlayListByArtistID Repository err: ", err)
 		return playLists, err
 	}
 	return playLists, nil

@@ -47,5 +47,6 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 		playListRouter.GET("", playListHandler.GetAll)
 		playListRouter.GET("/id/:id", playListHandler.GetPlayListByID)
 		playListRouter.GET("/name/:name", playListHandler.GetPlayListByName)
+		playListRouter.GET("/user/:id", playListHandler.GetPlayListByUserID)
 	}
 }
