@@ -25,7 +25,7 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 	songHandler := NewSongHandler(__songService)
 	playListHandler := NewPlayListHandler(__playListService)
 	v1 := g.Group("/v1")
-
+	v1.Use(middleware.HTTPAuthentication)
 	// Authen
 	authenRouter := v1.Group("/authen")
 	{
@@ -34,7 +34,6 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 	}
 	songRouter := v1.Group("/songs")
 	{
-		songRouter.Use(middleware.HTTPAuthentication)
 		songRouter.GET("", songHandler.GetAll)
 		songRouter.GET("/id/:id", songHandler.GetSongByID)
 		songRouter.GET("/name/:name", songHandler.GetSongByName)
