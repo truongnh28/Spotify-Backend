@@ -39,6 +39,8 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 		songRouter.GET("/id/:id", songHandler.GetSongByID)
 		songRouter.GET("/name/:name", songHandler.GetSongByName)
 		songRouter.GET("/play_list/:id", songHandler.GetSongByPlayListId)
+		songRouter.GET("/album/:id", songHandler.GetSongByAlbumID)
+		songRouter.GET("/artist/:id", songHandler.GetSongByArtistID)
 	}
 	playListRouter := v1.Group("/playlists")
 	{

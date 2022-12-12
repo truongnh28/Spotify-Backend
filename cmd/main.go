@@ -46,6 +46,8 @@ func main() {
 	songRepository := repositories.NewSongRepository(db)
 	accountRepository := repositories.NewAccountRepository(db)
 	playListRepository := repositories.NewPlayListRepository(db)
+	artistRepository := repositories.NewArtistRepository(db)
+	albumRepository := repositories.NewAlbumRepository(db)
 	// Init Service
 	//memoryCache := cache.NewMemoryCache()
 	redisCache := cache.NewServerCacheRedis(jedis)
@@ -53,6 +55,8 @@ func main() {
 	authenService := services.NewAuthenService(helper.GetJWTInstance(), redisCache, accountRepository, config.AuthConfig())
 	accountService := services.NewAccountService(accountRepository, redisCache, config.AuthConfig())
 	playListService := services.NewPlayListService(playListRepository)
+	artistService := services.NewArtistService(artistRepository)
+	albumService := services.NewAlbumService(albumRepository)
 	// Init w
 	gin.SetMode(gin.TestMode)
 	router := gin.Default()
@@ -72,6 +76,8 @@ func main() {
 		authenService,
 		accountService,
 		playListService,
+		artistService,
+		albumService,
 	)
 	glog.Infof("runing on port: %d ", 8082)
 	err = router.Run(":8082")

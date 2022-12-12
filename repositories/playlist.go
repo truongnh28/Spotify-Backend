@@ -10,7 +10,7 @@ import (
 type PlayListRepository interface {
 	GetAllPlayList(ctx context.Context) ([]models.PlayList, error)
 	GetPlayListByID(ctx context.Context, id uint) (models.PlayList, error)
-	GetPlayListByName(ctx context.Context, name string) (models.PlayList, error)
+	GetPlayListByName(ctx context.Context, name string) ([]models.PlayList, error)
 }
 
 type playlistRepositoryImpl struct {
@@ -44,14 +44,14 @@ func (s *playlistRepositoryImpl) GetPlayListByID(ctx context.Context, id uint) (
 	return playList, nil
 }
 
-func (s *playlistRepositoryImpl) GetPlayListByName(ctx context.Context, name string) (models.PlayList, error) {
+func (s *playlistRepositoryImpl) GetPlayListByName(ctx context.Context, name string) ([]models.PlayList, error) {
 	var (
-		playList = models.PlayList{}
-		db       = s.database.WithContext(ctx)
+		playLists = make([]models.PlayList, 0)
+		db        = s.database.WithContext(ctx)
 	)
-	err := db.Model(models.PlayList{}).Where("name like ?", "%"+name+"%").First(&playList).Error
+	err := db.Model(models.PlayList{}).Where("name like ?", "%"+name+"%").Find(&playLists).Error
 	if err != nil {
-		return playList, err
+		return playLists, err
 	}
-	return playList, nil
+	return playLists, nil
 }

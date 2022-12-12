@@ -13,7 +13,9 @@ type SongService interface {
 	GetAllSong(ctx context.Context) ([]dto.Song, common.SubReturnCode)
 	GetSongByID(ctx context.Context, id uint) (dto.Song, common.SubReturnCode)
 	GetSongByName(ctx context.Context, name string) ([]dto.Song, common.SubReturnCode)
-	GetSongByPlayListID(ctx context.Context, id uint) ([]dto.Song, common.SubReturnCode)
+	GetSongByPlayListID(ctx context.Context, playListId uint) ([]dto.Song, common.SubReturnCode)
+	GetSongByArtistID(ctx context.Context, artistId uint) ([]dto.Song, common.SubReturnCode)
+	GetSongByAlbumID(ctx context.Context, albumId uint) ([]dto.Song, common.SubReturnCode)
 }
 
 func NewSongService(songRepo repositories.SongRepository) SongService {
@@ -101,6 +103,54 @@ func (s *songServiceImpl) GetSongByPlayListID(ctx context.Context, id uint) ([]d
 	songs, err := s.songRepo.GetSongByPlayListID(ctx, id)
 	if err != nil {
 		glog.Infoln("GetSongByPlayListID service err: ", err)
+		return resp, common.SystemError
+	}
+	for _, song := range songs {
+		resp = append(resp, dto.Song{
+			SongID:      song.SongID,
+			Name:        song.Name,
+			AlbumID:     song.AlbumID,
+			ArtistID:    song.ArtistID,
+			Lyrics:      song.Lyrics,
+			Length:      song.Length,
+			URL:         song.URL,
+			YoutubeLink: song.YoutubeLink,
+		})
+	}
+	return resp, common.OK
+}
+
+func (s *songServiceImpl) GetSongByArtistID(ctx context.Context, artistId uint) ([]dto.Song, common.SubReturnCode) {
+	var (
+		resp = make([]dto.Song, 0)
+	)
+	songs, err := s.songRepo.GetSongByArtistID(ctx, artistId)
+	if err != nil {
+		glog.Infoln("GetSongByArtistID service err: ", err)
+		return resp, common.SystemError
+	}
+	for _, song := range songs {
+		resp = append(resp, dto.Song{
+			SongID:      song.SongID,
+			Name:        song.Name,
+			AlbumID:     song.AlbumID,
+			ArtistID:    song.ArtistID,
+			Lyrics:      song.Lyrics,
+			Length:      song.Length,
+			URL:         song.URL,
+			YoutubeLink: song.YoutubeLink,
+		})
+	}
+	return resp, common.OK
+}
+
+func (s *songServiceImpl) GetSongByAlbumID(ctx context.Context, albumId uint) ([]dto.Song, common.SubReturnCode) {
+	var (
+		resp = make([]dto.Song, 0)
+	)
+	songs, err := s.songRepo.GetSongByAlbumID(ctx, albumId)
+	if err != nil {
+		glog.Infoln("GetSongByAlbumID service err: ", err)
 		return resp, common.SystemError
 	}
 	for _, song := range songs {

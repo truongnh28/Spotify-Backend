@@ -13,6 +13,8 @@ type SongRepository interface {
 	GetSongByID(ctx context.Context, id uint) (models.Song, error)
 	GetSongByName(ctx context.Context, name string) ([]models.Song, error)
 	GetSongByPlayListID(ctx context.Context, id uint) ([]models.Song, error)
+	GetSongByArtistID(ctx context.Context, artistId uint) ([]models.Song, error)
+	GetSongByAlbumID(ctx context.Context, albumId uint) ([]models.Song, error)
 }
 
 type songRepositoryImpl struct {
@@ -69,6 +71,34 @@ func (s *songRepositoryImpl) GetSongByPlayListID(ctx context.Context, id uint) (
 	err := db.Model(&models.Song{}).Joins("inner join playlists_songs on playlists_songs.song_ID = songs.id").Where("songs.id = ?", id).Find(&songs).Error
 	if err != nil {
 		glog.Errorln("GetSongByPlayListID Repository err: ", err)
+		return songs, err
+	}
+	return songs, nil
+}
+
+func (s *songRepositoryImpl) GetSongByArtistID(ctx context.Context, artistId uint) ([]models.Song, error) {
+	var (
+		songs = make([]models.Song, 0)
+		db    = s.database.WithContext(ctx)
+	)
+
+	err := db.Model(&models.Song{}).Joins("inner join artists on artists.id = songs.artist_ID").Where("artists.id = ?", artistId).Find(&songs).Error
+	if err != nil {
+		glog.Errorln("GetSongByArtistID Repository err: ", err)
+		return songs, err
+	}
+	return songs, nil
+}
+
+func (s *songRepositoryImpl) GetSongByAlbumID(ctx context.Context, albumId uint) ([]models.Song, error) {
+	var (
+		songs = make([]models.Song, 0)
+		db    = s.database.WithContext(ctx)
+	)
+
+	err := db.Model(&models.Song{}).Joins("inner join albums on albums.id = songs.album_ID").Where("albums.id = ?", albumId).Find(&songs).Error
+	if err != nil {
+		glog.Errorln("GetSongByAlbumID Repository err: ", err)
 		return songs, err
 	}
 	return songs, nil

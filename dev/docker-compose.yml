@@ -9,7 +9,6 @@ services:
       - '6380:6379'
     networks:
       - spotify-network
-
   spotify-db:
     container_name: spotify-db
     image: mysql:8
@@ -18,21 +17,21 @@ services:
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: myspotify
     ports:
-      - "3306:3306"
+      - "3307:3306"
     networks:
       - spotify-network
     volumes:
       - ./initdb:/docker-entrypoint-initdb.d
-  spotify-be:
-    depends_on:
-      - spotify-db
-      - spotify-redis
-    image: truongnh28/spotify
-    container_name: spotify-be
-    restart: always
-    ports:
-      - "8080:8080"
-    networks:
-      - spotify-network
+#  spotify-be:
+#    depends_on:
+#      - spotify-db
+#      - spotify-redis
+#    image: truongnh28/spotify
+#    container_name: spotify-be
+#    restart: always
+#    ports:
+#      - "8080:8080"
+#    networks:
+#      - spotify-network
 networks:
   spotify-network:
