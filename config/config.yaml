@@ -1,0 +1,19 @@
+app:
+  database:
+    address: "13.215.228.202"
+    port: "3306"
+    username: "root"
+    password: "123456"
+    database-name: "myspotify"
+    max-open-conns: 100
+    max-idle-conns: 10
+    conn-max-lifetime: 60
+  redis:
+    usecluster: false
+    single:
+      url: "localhost:6380"
+    cluster:
+      url: ""
+  auth:
+    secretKey: "1212121dev!@"
+    expiredTime: 17280000
