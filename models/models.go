@@ -9,7 +9,7 @@ type Album struct {
 	*gorm.Model
 	AlbumID    uint      `gorm:"column:id"`
 	Name       string    `gorm:"column:name"`
-	ArtistID   uint      `gorm:"column:artist_ID"`
+	ArtistID   uint      `gorm:"column:artist_id"`
 	Artists    Artist    `gorm:"foreignKey:id;references:id"`
 	CreatedAt  time.Time `gorm:"column:created_at"`
 	UploadedAt time.Time `gorm:"column:uploaded_at"`
@@ -31,9 +31,9 @@ type Artist struct {
 type Interaction struct {
 	*gorm.Model
 	InteractionID uint      `gorm:"column:id"`
-	UserID        uint      `gorm:"column:user_ID"`
+	UserID        uint      `gorm:"column:user_id"`
 	Users         Account   `gorm:"foreignKey:id;references:id"`
-	SongID        uint      `gorm:"column:song_ID"`
+	SongID        uint      `gorm:"column:song_id"`
 	Songs         Song      `gorm:"foreignKey:id;references:id"`
 	Liked         uint      `gorm:"column:liked"`
 	CreatedAt     time.Time `gorm:"column:created_at"`
@@ -49,15 +49,15 @@ type PlayList struct {
 	UploadedAt time.Time `gorm:"column:uploaded_at"`
 	DeletedAt  time.Time `gorm:"column:deleted_at"`
 	CoverImg   string    `gorm:"column:cover_img"`
-	UserID     uint      `gorm:"column:user_ID"`
+	UserID     uint      `gorm:"column:user_id"`
 	Users      Account   `gorm:"foreignKey:id;references:id"`
 }
 
 type PlayListSong struct {
 	*gorm.Model
-	SongID     uint     `gorm:"column:song_ID"`
+	SongID     uint     `gorm:"column:song_id"`
 	Songs      Song     `gorm:"foreignKey:id;references:id"`
-	PlayListID uint     `gorm:"column:playlist_ID"`
+	PlayListID uint     `gorm:"column:playlist_id"`
 	PlayLists  PlayList `gorm:"foreignKey:id;references:id"`
 }
 
@@ -65,9 +65,9 @@ type Song struct {
 	*gorm.Model
 	SongID      uint      `gorm:"column:id"`
 	Name        string    `gorm:"column:name"`
-	AlbumID     uint      `gorm:"column:album_ID"`
+	AlbumID     uint      `gorm:"column:album_id"`
 	Albums      Album     `gorm:"foreignKey:id;references:id"`
-	ArtistID    uint      `gorm:"column:artist_ID"`
+	ArtistID    uint      `gorm:"column:artist_id"`
 	Artists     Artist    `gorm:"foreignKey:id;references:id"`
 	Lyrics      string    `gorm:"column:lyrics"`
 	Length      uint      `gorm:"column:length"`
