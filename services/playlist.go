@@ -37,8 +37,8 @@ func (s *playListServiceImpl) GetAllPlayList(ctx context.Context) ([]dto.PlayLis
 		resp = append(resp, dto.PlayList{
 			PlayListID: val.PlayListID,
 			Name:       val.Name,
-			CoverImg:   "",
-			UserID:     0,
+			CoverImg:   val.CoverImg,
+			UserID:     val.UserID,
 		})
 	}
 	return resp, common.OK
