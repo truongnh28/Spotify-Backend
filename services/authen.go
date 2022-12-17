@@ -11,6 +11,7 @@ import (
 	"spotify/cache"
 	"spotify/config"
 	"spotify/dto"
+	"spotify/helper"
 	"spotify/helper/common"
 	"spotify/models"
 	"spotify/repositories"
@@ -32,31 +33,22 @@ func (a *authenServiceImpl) checkUserFromDB(ctx context.Context, userInfo dto.Lo
 		resp    *dto.LoginResponseData
 		account *dto.Account
 	)
-	fmt.Println(userInfo.Username)
+
 	acc, err := a.accountRepo.FindByUserName(ctx, userInfo.Username)
 	if err != nil {
-		fmt.Println("log err")
-		fmt.Println(err)
+		glog.Errorln("FindByUserName err: ", err)
+		return nil, errors.New("account not valid")
 	}
-	glog.Infoln("AccountFromConfig acc: ", acc)
-	if acc.UserName != "" {
+
+	if acc.UserName != "" && helper.CheckPasswordHash(userInfo.Password, acc.Password) {
 		if acc.Status == models.Blocked {
 			glog.Errorln("account blocked", acc.UserName)
 			return nil, errors.New("account has been blocked")
 		}
 	} else {
-		if err := a.accountRepo.Create(ctx, models.Account{
-			UserName: userInfo.Username,
-			Status:   models.Active,
-			Role:     models.Admin,
-		}); err != nil {
-			glog.Errorln(err)
-			return nil, errors.New("system error")
-		}
-		acc.Role = models.Admin
-		acc.Status = models.Active
+		glog.Errorln("wrong login information")
+		return nil, errors.New("wrong login information")
 	}
-
 	key := fmt.Sprintf("%s:%s", common.PrefixLoginCode, userInfo.Username)
 	code, err := a.serverCache.GetCode(key)
 	if err != nil && err != redis.Nil {

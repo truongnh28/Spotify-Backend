@@ -11,6 +11,7 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/golang/glog v1.0.0
 	github.com/google/uuid v1.3.0
+	github.com/joho/godotenv v1.4.0
 	github.com/spf13/viper v1.12.0
 	github.com/stretchr/testify v1.8.0
 	gorm.io/driver/mysql v1.4.4

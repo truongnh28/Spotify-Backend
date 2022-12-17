@@ -17,3 +17,8 @@ app:
   auth:
     secretKey: "1212121dev!@"
     expiredTime: 17280000
+  cloudinary:
+    CLOUDINARY_CLOUD_NAME: "dbk0cmzcb"
+    CLOUDINARY_API_KEY: "512616158545567"
+    CLOUDINARY_API_SECRET: "mClhxuKZ9F-EsP4Kjm_s5qccdvk"
+    CLOUDINARY_UPLOAD_FOLDER: "go-cloudinary"

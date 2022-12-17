@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/golang/glog"
 	"gorm.io/gorm"
+	"spotify/dto"
 	"spotify/models"
 )
 
@@ -13,6 +14,8 @@ type PlayListRepository interface {
 	GetPlayListByID(ctx context.Context, id uint) (models.PlayList, error)
 	GetPlayListByName(ctx context.Context, name string) ([]models.PlayList, error)
 	GetPlayListByUserID(ctx context.Context, userId uint) ([]models.PlayList, error)
+	AddPlayList(ctx context.Context, playListIn dto.PlayList) error
+	UpdatePlayList(ctx context.Context, playListIn dto.PlayList) error
 }
 
 type playlistRepositoryImpl struct {
@@ -70,4 +73,39 @@ func (s *playlistRepositoryImpl) GetPlayListByUserID(ctx context.Context, userId
 		return playLists, err
 	}
 	return playLists, nil
+}
+
+func (s *playlistRepositoryImpl) AddPlayList(ctx context.Context, playListIn dto.PlayList) error {
+	var (
+		playList = models.PlayList{
+			Name:     playListIn.Name,
+			CoverImg: playListIn.CoverImg,
+			UserID:   playListIn.UserID,
+		}
+		db = s.database.WithContext(ctx)
+	)
+	err := db.Model(&models.PlayList{}).Create(&playList).Error
+	if err != nil {
+		glog.Errorln("AddPlayList repository err: ", err)
+		return err
+	}
+	return nil
+}
+
+func (s *playlistRepositoryImpl) UpdatePlayList(ctx context.Context, playListIn dto.PlayList) error {
+	var (
+		playList = models.PlayList{
+			PlayListID: playListIn.PlayListID,
+			Name:       playListIn.Name,
+			CoverImg:   playListIn.CoverImg,
+			UserID:     playListIn.UserID,
+		}
+		db = s.database.WithContext(ctx)
+	)
+	err := db.Model(&models.PlayList{}).Select("name", "cover_img").Where("id = ?", playListIn.PlayListID).Updates(&playList).Error
+	if err != nil {
+		glog.Errorln("UpdatePlayList repository err: ", err)
+		return err
+	}
+	return nil
 }

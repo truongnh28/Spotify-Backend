@@ -75,3 +75,58 @@ func (s *ArtistHandlerImpl) GetArtistByName(context *gin.Context) {
 	out.Artists = response
 	helper.BuildResponseByReturnCode(out, common.Success, common.OK)
 }
+
+func (s *ArtistHandlerImpl) AddArtist(context *gin.Context) {
+	var (
+		out = &dto.ArtistResponse{}
+	)
+	defer func() {
+		context.JSON(200, out)
+	}()
+	name := context.Request.FormValue("name")
+	img := context.Request.FormValue("img")
+	desc := context.Request.FormValue("desc")
+	in := dto.Artist{
+		Name:        name,
+		Description: desc,
+		CoverImg:    img,
+	}
+	code := s.artistService.AddArtist(context, in)
+	if code != common.OK {
+		helper.BuildResponseByReturnCode(out, common.Fail, code)
+		return
+	}
+	out.Artists = append(out.Artists, in)
+	helper.BuildResponseByReturnCode(out, common.Success, common.OK)
+}
+
+func (s *ArtistHandlerImpl) UpdateArtist(context *gin.Context) {
+	var (
+		out = &dto.ArtistResponse{}
+	)
+	defer func() {
+		context.JSON(200, out)
+	}()
+	name := context.Request.FormValue("name")
+	img := context.Request.FormValue("img")
+	desc := context.Request.FormValue("desc")
+	artistId, err := strconv.Atoi(context.Request.FormValue("artist_id"))
+	if err != nil {
+		glog.Errorln("parse artistId string to int err: ", err)
+		helper.BuildResponseByReturnCode(out, common.Fail, common.SystemError)
+		return
+	}
+	in := dto.Artist{
+		Name:        name,
+		Description: desc,
+		CoverImg:    img,
+		ArtistID:    uint(artistId),
+	}
+	code := s.artistService.UpdateArtist(context, in)
+	if code != common.OK {
+		helper.BuildResponseByReturnCode(out, common.Fail, code)
+		return
+	}
+	out.Artists = append(out.Artists, in)
+	helper.BuildResponseByReturnCode(out, common.Success, common.OK)
+}

@@ -59,17 +59,17 @@ type Song struct {
 	Length      uint   `gorm:"column:length"`
 	URL         string `gorm:"column:url"`
 	YoutubeLink string `gorm:"column:youtube_link"`
+	SongCloudId string `gorm:"column:song_cloud_id"`
 }
 
 type Account struct {
 	*gorm.Model
-	Id        uint          `gorm:"column:id"`
-	UserName  string        `gorm:"index:username_idx_uni,unique"`
-	Email     string        `gorm:"column:email"`
-	Password  string        `gorm:"column:password"`
-	Role      AccountRole   `gorm:"column:role"`
-	GroupType uint          `gorm:"column:group_type"`
-	Status    AccountStatus `gorm:"column:status"`
+	Id       uint          `gorm:"column:id"`
+	UserName string        `gorm:"index:username_idx_uni,unique"`
+	Email    string        `gorm:"column:email"`
+	Password string        `gorm:"column:password"`
+	Role     AccountRole   `gorm:"column:role"`
+	Status   AccountStatus `gorm:"column:status"`
 }
 
 type AccountStatus string

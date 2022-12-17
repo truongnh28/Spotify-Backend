@@ -1,17 +1,8 @@
 package config
 
-import "github.com/spf13/viper"
-
-type LDAP struct {
-	Addr        string
-	UseTls      bool
-	Username    string
-	Password    string
-	BaseDN      string
-	ObjectClass string
-	Timeout     int64
-	Enable      bool
-}
+import (
+	"github.com/spf13/viper"
+)
 
 type Auth struct {
 	SecretKey      string `json:"secretKey"`
@@ -36,4 +27,11 @@ func AuthConfig() *Auth {
 type BaseConfig struct {
 	BasePath  string
 	BasicAuth string
+}
+
+type CloudinaryConfig struct {
+	Name      string
+	APIKey    string
+	APISecret string
+	Folder    string
 }

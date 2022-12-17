@@ -2,7 +2,8 @@ package dto
 
 type CreateAccountRequest struct {
 	Username string `json:"username" binding:"required"`
-	Code     string `json:"code"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 	Role     string `json:"role" binding:"required,oneof=SuperAdmin Admin User"`
 	Status   string `json:"status" binding:"required,oneof=Active Blocked"`
 }
@@ -18,6 +19,6 @@ type AccountsResponse struct {
 }
 
 type AccountResponse struct {
-	Account *Account `json:"account"`
+	Account Account `json:"account"`
 	StatusError
 }

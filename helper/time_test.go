@@ -1,7 +1,6 @@
 package helper
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
@@ -95,7 +94,6 @@ func Test_GetDatesLastYearToToday(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := GetDatesLastYearToToday(start, end)
-			fmt.Println(got)
 			if !assert.Equal(t, tt.want, got) {
 				t.Errorf("GetDatesLastYearToToday() got = %v, want %v", got, tt.want)
 			}

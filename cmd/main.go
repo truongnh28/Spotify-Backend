@@ -15,6 +15,7 @@ import (
 	"os"
 	"path"
 	"spotify/cache"
+	"spotify/client"
 	"spotify/config"
 	v1 "spotify/controller/v1"
 	"spotify/helper"
@@ -40,14 +41,7 @@ func main() {
 	}
 	// Init instance
 	jedis := getRedisClient()
-	//cloudinaryClient := client.GetCloudinaryAPI()
-	//resp, err := cloudinaryClient.UploadMusic(context.Background(), "./cmd/tusu.mp3")
-	//if err != nil {
-	//	fmt.Println("err: ", err)
-	//}
-	//e, _ := json.Marshal(resp)
-	//fmt.Println(string(e))
-	//get config
+	cld := getCloudinaryClient()
 	db := getDatabaseConnector()
 	// Init Repository
 	songRepository := repositories.NewSongRepository(db)
@@ -57,7 +51,6 @@ func main() {
 	albumRepository := repositories.NewAlbumRepository(db)
 	interactionRepository := repositories.NewInteractionRepository(db)
 	// Init Service
-	//memoryCache := cache.NewMemoryCache()
 	redisCache := cache.NewServerCacheRedis(jedis)
 	songService := services.NewSongService(songRepository)
 	authenService := services.NewAuthenService(helper.GetJWTInstance(), redisCache, accountRepository, config.AuthConfig())
@@ -66,6 +59,7 @@ func main() {
 	artistService := services.NewArtistService(artistRepository)
 	albumService := services.NewAlbumService(albumRepository)
 	interactionService := services.NewInteractionService(interactionRepository)
+	mediaService := services.NewMediaService(cld)
 	// Init w
 	gin.SetMode(gin.TestMode)
 	router := gin.Default()
@@ -88,6 +82,7 @@ func main() {
 		artistService,
 		albumService,
 		interactionService,
+		mediaService,
 	)
 	glog.Infof("runing on port: %d ", 8080)
 	err = router.Run(":8080")
@@ -97,7 +92,6 @@ func main() {
 }
 
 func getRedisClient() cache.RedisClient {
-
 	if viper.GetBool("app.redis.usecluster") {
 		redisClient := redis.NewClusterClient(&redis.ClusterOptions{
 			Addrs:    strings.Split(viper.GetString("app.redis.cluster.url"), ";"),
@@ -163,16 +157,15 @@ func getVersion(c *gin.Context) {
 	c.JSON(http.StatusOK, os.Getenv("image_tag"))
 }
 
-func getLDAPConfig() *config.LDAP {
-	return &config.LDAP{
-		Addr:        viper.GetString("app.ldap.addr"),
-		UseTls:      viper.GetBool("app.ldap.useTls"),
-		Username:    viper.GetString("app.ldap.username"),
-		Password:    viper.GetString("app.ldap.password"),
-		BaseDN:      viper.GetString("app.ldap.baseDN"),
-		ObjectClass: viper.GetString("app.ldap.objectClass"),
-		Timeout:     viper.GetInt64("app.ldap.timeout"),
+func getCloudinaryClient() client.CloudinaryAPI {
+	cldConfig := config.CloudinaryConfig{
+		Name:      viper.GetString("app.cloudinary.CLOUDINARY_CLOUD_NAME"),
+		APIKey:    viper.GetString("app.cloudinary.CLOUDINARY_API_KEY"),
+		APISecret: viper.GetString("app.cloudinary.CLOUDINARY_API_SECRET"),
+		Folder:    viper.GetString("app.cloudinary.CLOUDINARY_UPLOAD_FOLDER"),
 	}
+	cldClient := client.GetCloudinaryAPI(cldConfig)
+	return cldClient
 }
 
 func extractConfigPath() (string, string) {

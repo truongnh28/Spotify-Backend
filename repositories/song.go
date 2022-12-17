@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/golang/glog"
 	"gorm.io/gorm"
+	"spotify/dto"
 	"spotify/models"
 )
 
@@ -16,6 +17,9 @@ type SongRepository interface {
 	GetSongByArtistID(ctx context.Context, artistId uint) ([]models.Song, error)
 	GetSongByAlbumID(ctx context.Context, albumId uint) ([]models.Song, error)
 	GetSongLikedByUserID(ctx context.Context, userId uint) ([]models.Song, error)
+	AddSong(ctx context.Context, songIn dto.Song) error
+	AddSongToPlayList(ctx context.Context, songId, playlistId uint) error
+	RemoveSongToPlayList(ctx context.Context, songId, playlistId uint) error
 }
 
 type songRepositoryImpl struct {
@@ -116,14 +120,14 @@ func (s *songRepositoryImpl) GetSongByAlbumID(ctx context.Context, albumId uint)
 	return songs, nil
 }
 
-func (s *songRepositoryImpl) GetSongLikedByUserID(ctx context.Context, albumId uint) ([]models.Song, error) {
+func (s *songRepositoryImpl) GetSongLikedByUserID(ctx context.Context, userId uint) ([]models.Song, error) {
 	var (
 		songs        = make([]models.Song, 0)
 		interactions = make([]models.Interaction, 0)
 		songIds      = make([]uint, 0)
 		db           = s.database.WithContext(ctx)
 	)
-	err := db.Model(&models.Interaction{}).Joins("inner join accounts on accounts.id = interactions.user_id").Where("interactions.liked = 1").Find(&interactions).Error
+	err := db.Model(&models.Interaction{}).Joins("inner join accounts on accounts.id = interactions.user_id").Where("interactions.liked = 1 and interactions.user_id = ?", userId).Find(&interactions).Error
 	if err != nil {
 		glog.Errorln("GetSongLikedByUserID Repository err: ", err)
 		return songs, err
@@ -137,4 +141,58 @@ func (s *songRepositoryImpl) GetSongLikedByUserID(ctx context.Context, albumId u
 		return songs, err
 	}
 	return songs, nil
+}
+
+func (s *songRepositoryImpl) AddSong(ctx context.Context, songIn dto.Song) error {
+	var (
+		song = models.Song{
+			Name:        songIn.Name,
+			AlbumID:     songIn.AlbumID,
+			ArtistID:    songIn.ArtistID,
+			Lyrics:      songIn.Lyrics,
+			Length:      songIn.Length,
+			URL:         songIn.URL,
+			YoutubeLink: songIn.YoutubeLink,
+			SongCloudId: songIn.SongCloudId,
+		}
+		db = s.database.WithContext(ctx)
+	)
+	err := db.Model(&models.Song{}).Create(&song).Error
+	if err != nil {
+		glog.Errorln("AddSong repository err: ", err)
+		return err
+	}
+	return nil
+}
+
+func (s *songRepositoryImpl) AddSongToPlayList(ctx context.Context, songId, playlistId uint) error {
+	var (
+		playListSong = models.PlayListSong{
+			SongID:     songId,
+			PlayListID: playlistId,
+		}
+		db = s.database.WithContext(ctx)
+	)
+	err := db.Model(&models.PlayListSong{}).Create(&playListSong).Error
+	if err != nil {
+		glog.Errorln("AddSongToPlayList repository err: ", err)
+		return err
+	}
+	return nil
+}
+
+func (s *songRepositoryImpl) RemoveSongToPlayList(ctx context.Context, songId, playlistId uint) error {
+	var (
+		playListSong = models.PlayListSong{
+			SongID:     songId,
+			PlayListID: playlistId,
+		}
+		db = s.database.WithContext(ctx)
+	)
+	err := db.Model(&models.PlayListSong{}).Where("song_id = ? AND playlist_id = ?", songId, playlistId).Delete(&playListSong).Error
+	if err != nil {
+		glog.Errorln("RemoveSongToPlayList repository err: ", err)
+		return err
+	}
+	return nil
 }

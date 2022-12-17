@@ -98,3 +98,68 @@ func (s *PlayListHandlerImpl) GetPlayListByUserID(context *gin.Context) {
 	out.PlayLists = response
 	helper.BuildResponseByReturnCode(out, common.Success, common.OK)
 }
+
+func (s *PlayListHandlerImpl) AddPlayList(context *gin.Context) {
+	var (
+		out = &dto.PlayListResponse{}
+	)
+	defer func() {
+		context.JSON(200, out)
+	}()
+	name := context.Request.FormValue("name")
+	img := context.Request.FormValue("img")
+	userId, err := strconv.Atoi(context.Request.FormValue("user_id"))
+	if err != nil {
+		glog.Errorln("parse userId string to int err: ", err)
+		helper.BuildResponseByReturnCode(out, common.Fail, common.SystemError)
+		return
+	}
+	in := dto.PlayList{
+		Name:     name,
+		CoverImg: img,
+		UserID:   uint(userId),
+	}
+	code := s.playListService.AddPlayList(context, in)
+	if code != common.OK {
+		helper.BuildResponseByReturnCode(out, common.Fail, code)
+		return
+	}
+	out.PlayLists = append(out.PlayLists, in)
+	helper.BuildResponseByReturnCode(out, common.Success, common.OK)
+}
+
+func (s *PlayListHandlerImpl) UpdatePlayList(context *gin.Context) {
+	var (
+		out = &dto.PlayListResponse{}
+	)
+	defer func() {
+		context.JSON(200, out)
+	}()
+	name := context.Request.FormValue("name")
+	img := context.Request.FormValue("img")
+	userId, err := strconv.Atoi(context.Request.FormValue("user_id"))
+	if err != nil {
+		glog.Errorln("parse userId string to int err: ", err)
+		helper.BuildResponseByReturnCode(out, common.Fail, common.SystemError)
+		return
+	}
+	playListId, err := strconv.Atoi(context.Request.FormValue("playlist_id"))
+	if err != nil {
+		glog.Errorln("parse playListId string to int err: ", err)
+		helper.BuildResponseByReturnCode(out, common.Fail, common.SystemError)
+		return
+	}
+	in := dto.PlayList{
+		PlayListID: uint(playListId),
+		Name:       name,
+		CoverImg:   img,
+		UserID:     uint(userId),
+	}
+	code := s.playListService.UpdatePlayList(context, in)
+	if code != common.OK {
+		helper.BuildResponseByReturnCode(out, common.Fail, code)
+		return
+	}
+	out.PlayLists = append(out.PlayLists, in)
+	helper.BuildResponseByReturnCode(out, common.Success, common.OK)
+}
