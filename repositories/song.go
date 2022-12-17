@@ -18,6 +18,8 @@ type SongRepository interface {
 	GetSongByAlbumID(ctx context.Context, albumId uint) ([]models.Song, error)
 	GetSongLikedByUserID(ctx context.Context, userId uint) ([]models.Song, error)
 	AddSong(ctx context.Context, songIn dto.Song) error
+	AddSongToPlayList(ctx context.Context, songId, playlistId uint) error
+	RemoveSongToPlayList(ctx context.Context, songId, playlistId uint) error
 }
 
 type songRepositoryImpl struct {
@@ -158,6 +160,38 @@ func (s *songRepositoryImpl) AddSong(ctx context.Context, songIn dto.Song) error
 	err := db.Model(&models.Song{}).Create(&song).Error
 	if err != nil {
 		glog.Errorln("AddSong repository err: ", err)
+		return err
+	}
+	return nil
+}
+
+func (s *songRepositoryImpl) AddSongToPlayList(ctx context.Context, songId, playlistId uint) error {
+	var (
+		playListSong = models.PlayListSong{
+			SongID:     songId,
+			PlayListID: playlistId,
+		}
+		db = s.database.WithContext(ctx)
+	)
+	err := db.Model(&models.PlayListSong{}).Create(&playListSong).Error
+	if err != nil {
+		glog.Errorln("AddSongToPlayList repository err: ", err)
+		return err
+	}
+	return nil
+}
+
+func (s *songRepositoryImpl) RemoveSongToPlayList(ctx context.Context, songId, playlistId uint) error {
+	var (
+		playListSong = models.PlayListSong{
+			SongID:     songId,
+			PlayListID: playlistId,
+		}
+		db = s.database.WithContext(ctx)
+	)
+	err := db.Model(&models.PlayListSong{}).Where("song_id = ? AND playlist_id = ?", songId, playlistId).Delete(&playListSong).Error
+	if err != nil {
+		glog.Errorln("RemoveSongToPlayList repository err: ", err)
 		return err
 	}
 	return nil

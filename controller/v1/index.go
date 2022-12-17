@@ -56,6 +56,8 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 		songRouter.GET("/artist/:id", songHandler.GetSongByArtistID)
 		songRouter.GET("/interactions/:id", songHandler.GetSongLikedByUserID)
 		songRouter.POST("/add", songHandler.AddSong)
+		songRouter.POST("/add_playlist", songHandler.AddSongToPlayList)
+		songRouter.DELETE("/remove_playlist", songHandler.RemoveSongToPlayList)
 	}
 	playListRouter := v1.Group("/playlists")
 	{
@@ -85,6 +87,6 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 	{
 		//interactionRouter.Use(middleware.HTTPAuthentication)
 		interactionRouter.POST("/add/:user_id/:song_id", interactionHandler.AddInteraction)
-		interactionRouter.POST("/remove/:user_id/:song_id", interactionHandler.RemoveInteraction)
+		interactionRouter.DELETE("/remove/:user_id/:song_id", interactionHandler.RemoveInteraction)
 	}
 }
