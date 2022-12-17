@@ -57,6 +57,7 @@ func (a *authenServiceImpl) checkUserFromDB(ctx context.Context, userInfo dto.Lo
 	}
 
 	account = &dto.Account{
+		UserId:   acc.Id,
 		Username: userInfo.Username,
 		Code:     string(code),
 		Status:   string(acc.Status),
