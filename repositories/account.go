@@ -3,13 +3,14 @@ package repositories
 import (
 	"context"
 	"gorm.io/gorm"
+	"spotify/dto"
 	"spotify/models"
 )
 
 //go:generate mockgen -destination=./mocks/mock_$GOFILE -source=$GOFILE -package=mocks
 type AccountRepository interface {
 	GetByDomain(likeDomain string) ([]*models.Account, error)
-	Create(ctx context.Context, acc models.Account) error
+	Create(ctx context.Context, req dto.CreateAccountRequest) error
 	FindByUserName(ctx context.Context, username string) (models.Account, error)
 	UpdateByUsername(ctx context.Context, username string, acc models.Account) (int64, error)
 }
@@ -34,11 +35,18 @@ func (a *accountRepositoryImpl) GetByDomain(name string) ([]*models.Account, err
 	return userProfiles, nil
 }
 
-func (a *accountRepositoryImpl) Create(ctx context.Context, acc models.Account) error {
+func (a *accountRepositoryImpl) Create(ctx context.Context, req dto.CreateAccountRequest) error {
 	var (
+		account = models.Account{
+			UserName: req.Username,
+			Email:    req.Email,
+			Password: req.Password,
+			Role:     models.AccountRole(req.Role),
+			Status:   models.AccountStatus(req.Status),
+		}
 		db = a.database.WithContext(ctx)
 	)
-	return db.Model(models.Account{}).Create(&acc).Error
+	return db.Model(models.Account{}).Create(&account).Error
 }
 
 func (a *accountRepositoryImpl) FindByUserName(ctx context.Context, username string) (models.Account, error) {

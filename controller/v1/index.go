@@ -12,6 +12,7 @@ var __albumService services.AlbumService
 var __artistService services.ArtistService
 var __interactionService services.InteractionService
 var __mediaService services.MediaService
+var __accountService services.AccountService
 
 func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 	for _, dependency := range dependencies {
@@ -30,6 +31,8 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 			__interactionService = dependency.(services.InteractionService)
 		case services.MediaService:
 			__mediaService = dependency.(services.MediaService)
+		case services.AccountService:
+			__accountService = dependency.(services.AccountService)
 		}
 	}
 
@@ -38,12 +41,17 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 	albumHandler := NewAlbumHandler(__albumService)
 	artistHandler := NewArtistHandler(__artistService)
 	interactionHandler := NewInteractionHandler(__interactionService)
+	accountHandler := NewAccountHandler(__accountService)
 	v1 := g.Group("/v1")
 	// Authen
 	authenRouter := v1.Group("/authen")
 	{
 		authenRouter.POST("login", login)
 		authenRouter.GET("logout", logout)
+	}
+	accountRouter := v1.Group("/accounts")
+	{
+		accountRouter.POST("/register", accountHandler.CreateAccount)
 	}
 	songRouter := v1.Group("/songs")
 	{

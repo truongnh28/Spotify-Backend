@@ -12,6 +12,7 @@ type LoginResponseData struct {
 
 type Account struct {
 	Username string `json:"username,omitempty"`
+	Email    string `json:"email,omitempty"`
 	Code     string `json:"code,omitempty"`
 	Role     string `json:"role,omitempty"`
 	Status   string `json:"status,omitempty"`

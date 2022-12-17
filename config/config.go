@@ -4,17 +4,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-type LDAP struct {
-	Addr        string
-	UseTls      bool
-	Username    string
-	Password    string
-	BaseDN      string
-	ObjectClass string
-	Timeout     int64
-	Enable      bool
-}
-
 type Auth struct {
 	SecretKey      string `json:"secretKey"`
 	ExpiredTime    int64  `json:"expiredTime"`

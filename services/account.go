@@ -15,12 +15,13 @@ import (
 )
 
 //go:generate mockgen -destination=./mocks/mock_$GOFILE -source=$GOFILE -package=mocks
-type UserService interface {
+type AccountService interface {
+	Create(ctx context.Context, req dto.CreateAccountRequest) common.SubReturnCode
 	Update(ctx context.Context, username string, req dto.UpdateAccountRequest) common.SubReturnCode
 	FindByUserName(ctx context.Context, username string) (dto.Account, common.SubReturnCode)
 }
 
-func (a *AccountServiceImpl) FindByUserName(ctx context.Context, username string) (dto.Account, common.SubReturnCode) {
+func (a *accountServiceImpl) FindByUserName(ctx context.Context, username string) (dto.Account, common.SubReturnCode) {
 	acc, err := a.accountRepository.FindByUserName(ctx, username)
 	if err != nil {
 		glog.Errorln("FindByUserName failed: ", err)
@@ -33,7 +34,7 @@ func (a *AccountServiceImpl) FindByUserName(ctx context.Context, username string
 	}, common.OK
 }
 
-func (a *AccountServiceImpl) Update(ctx context.Context, username string, req dto.UpdateAccountRequest) common.SubReturnCode {
+func (a *accountServiceImpl) Update(ctx context.Context, username string, req dto.UpdateAccountRequest) common.SubReturnCode {
 	glog.Infoln("Update request: ", req)
 	rowsAffected, err := a.accountRepository.UpdateByUsername(ctx, username, models.Account{
 		Status: models.AccountStatus(req.Status),
@@ -58,16 +59,25 @@ func (a *AccountServiceImpl) Update(ctx context.Context, username string, req dt
 	return common.OK
 }
 
-func NewAccountService(usersRepository repositories.AccountRepository, serverCache cache.ServerCache, authConfig *config.Auth) UserService {
-	return &AccountServiceImpl{
+func NewAccountService(usersRepository repositories.AccountRepository, serverCache cache.ServerCache, authConfig *config.Auth) AccountService {
+	return &accountServiceImpl{
 		accountRepository: usersRepository,
 		serverCache:       serverCache,
 		authConfig:        authConfig,
 	}
 }
 
-type AccountServiceImpl struct {
+type accountServiceImpl struct {
 	accountRepository repositories.AccountRepository
 	serverCache       cache.ServerCache
 	authConfig        *config.Auth
+}
+
+func (a *accountServiceImpl) Create(ctx context.Context, req dto.CreateAccountRequest) common.SubReturnCode {
+	err := a.accountRepository.Create(ctx, req)
+	if err != nil {
+		glog.Errorln("Add Album service err: ", err)
+		return common.SystemError
+	}
+	return common.OK
 }

@@ -42,7 +42,6 @@ func main() {
 	// Init instance
 	jedis := getRedisClient()
 	cld := getCloudinaryClient()
-	//get config
 	db := getDatabaseConnector()
 	// Init Repository
 	songRepository := repositories.NewSongRepository(db)
@@ -52,7 +51,6 @@ func main() {
 	albumRepository := repositories.NewAlbumRepository(db)
 	interactionRepository := repositories.NewInteractionRepository(db)
 	// Init Service
-	//memoryCache := cache.NewMemoryCache()
 	redisCache := cache.NewServerCacheRedis(jedis)
 	songService := services.NewSongService(songRepository)
 	authenService := services.NewAuthenService(helper.GetJWTInstance(), redisCache, accountRepository, config.AuthConfig())
