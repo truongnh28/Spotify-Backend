@@ -39,7 +39,6 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 	artistHandler := NewArtistHandler(__artistService)
 	interactionHandler := NewInteractionHandler(__interactionService)
 	v1 := g.Group("/v1")
-	//v1.Use(middleware.HTTPAuthentication)
 	// Authen
 	authenRouter := v1.Group("/authen")
 	{
@@ -48,6 +47,7 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 	}
 	songRouter := v1.Group("/songs")
 	{
+		//songRouter.Use(middleware.HTTPAuthentication)
 		songRouter.GET("", songHandler.GetAll)
 		songRouter.GET("/id/:id", songHandler.GetSongByID)
 		songRouter.GET("/name/:name", songHandler.GetSongByName)
@@ -59,6 +59,7 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 	}
 	playListRouter := v1.Group("/playlists")
 	{
+		//songRouter.Use(middleware.HTTPAuthentication)
 		playListRouter.GET("", playListHandler.GetAllPlayList)
 		playListRouter.GET("/id/:id", playListHandler.GetPlayListByID)
 		playListRouter.GET("/name/:name", playListHandler.GetPlayListByName)
@@ -66,18 +67,21 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 	}
 	albumRouter := v1.Group("/albums")
 	{
+		//albumRouter.Use(middleware.HTTPAuthentication)
 		albumRouter.GET("", albumHandler.GetAll)
 		albumRouter.GET("/id/:id", albumHandler.GetAlbumByID)
 		albumRouter.GET("/name/:name", albumHandler.GetAlbumByName)
 	}
 	artistRouter := v1.Group("/artist")
 	{
+		//artistRouter.Use(middleware.HTTPAuthentication)
 		artistRouter.GET("", artistHandler.GetAll)
 		artistRouter.GET("/id/:id", artistHandler.GetArtistByID)
 		artistRouter.GET("/name/:name", artistHandler.GetArtistByName)
 	}
 	interactionRouter := v1.Group("/interaction")
 	{
+		//interactionRouter.Use(middleware.HTTPAuthentication)
 		interactionRouter.POST("/add/:user_id/:song_id", interactionHandler.AddInteraction)
 		interactionRouter.POST("/remove/:user_id/:song_id", interactionHandler.RemoveInteraction)
 	}
