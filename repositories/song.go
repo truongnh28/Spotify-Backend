@@ -71,7 +71,7 @@ func (s *songRepositoryImpl) GetSongByPlayListID(ctx context.Context, id uint) (
 		db    = s.database.WithContext(ctx)
 	)
 
-	err := db.Model(&models.Song{}).Joins("inner join playlists_songs on playlists_songs.song_id = songs.id").Where("songs.id = ?", id).Find(&songs).Error
+	err := db.Model(&models.Song{}).Joins("inner join playlists_songs on playlists_songs.song_id = songs.id").Where("playlists_songs.id = ?", id).Find(&songs).Error
 	if err != nil {
 		glog.Errorln("GetSongByPlayListID Repository err: ", err)
 		return songs, err
