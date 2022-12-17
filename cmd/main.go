@@ -15,6 +15,7 @@ import (
 	"os"
 	"path"
 	"spotify/cache"
+	"spotify/client"
 	"spotify/config"
 	v1 "spotify/controller/v1"
 	"spotify/helper"
@@ -35,18 +36,13 @@ func main() {
 	viper.SetConfigType("yaml")
 	viper.SetConfigName(configFile)
 	err := viper.ReadInConfig()
+	cldConfig := config.EnvCloudName()
 	if err != nil {
 		panic(fmt.Errorf("fatal error config file: %s", err))
 	}
 	// Init instance
 	jedis := getRedisClient()
-	//cloudinaryClient := client.GetCloudinaryAPI()
-	//resp, err := cloudinaryClient.UploadMusic(context.Background(), "./cmd/tusu.mp3")
-	//if err != nil {
-	//	fmt.Println("err: ", err)
-	//}
-	//e, _ := json.Marshal(resp)
-	//fmt.Println(string(e))
+	cld := client.GetCloudinaryAPI(cldConfig)
 	//get config
 	db := getDatabaseConnector()
 	// Init Repository
@@ -66,6 +62,7 @@ func main() {
 	artistService := services.NewArtistService(artistRepository)
 	albumService := services.NewAlbumService(albumRepository)
 	interactionService := services.NewInteractionService(interactionRepository)
+	mediaService := services.NewMediaService(cld)
 	// Init w
 	gin.SetMode(gin.TestMode)
 	router := gin.Default()
@@ -88,6 +85,7 @@ func main() {
 		artistService,
 		albumService,
 		interactionService,
+		mediaService,
 	)
 	glog.Infof("runing on port: %d ", 8080)
 	err = router.Run(":8080")

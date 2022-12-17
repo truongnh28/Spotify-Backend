@@ -1,6 +1,11 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"github.com/joho/godotenv"
+	"github.com/spf13/viper"
+	"log"
+	"os"
+)
 
 type LDAP struct {
 	Addr        string
@@ -36,4 +41,24 @@ func AuthConfig() *Auth {
 type BaseConfig struct {
 	BasePath  string
 	BasicAuth string
+}
+
+type CloudinaryConfig struct {
+	Name      string
+	APIKey    string
+	APISecret string
+	Folder    string
+}
+
+func EnvCloudName() CloudinaryConfig {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	return CloudinaryConfig{
+		Name:      os.Getenv("CLOUDINARY_CLOUD_NAME"),
+		APIKey:    os.Getenv("CLOUDINARY_API_KEY"),
+		APISecret: os.Getenv("CLOUDINARY_API_SECRET"),
+		Folder:    os.Getenv("CLOUDINARY_UPLOAD_FOLDER"),
+	}
 }

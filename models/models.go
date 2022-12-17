@@ -59,6 +59,7 @@ type Song struct {
 	Length      uint   `gorm:"column:length"`
 	URL         string `gorm:"column:url"`
 	YoutubeLink string `gorm:"column:youtube_link"`
+	SongCloudId string `gorm:"column:song_cloud_id"`
 }
 
 type Account struct {

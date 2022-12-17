@@ -9,6 +9,7 @@ type Song struct {
 	Length      uint   `json:"length"`
 	URL         string `json:"url"`
 	YoutubeLink string `json:"youtube_link"`
+	SongCloudId string `json:"song_cloud_id"`
 }
 
 type SongResponse struct {

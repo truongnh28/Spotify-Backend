@@ -11,6 +11,7 @@ var __playListService services.PlayListService
 var __albumService services.AlbumService
 var __artistService services.ArtistService
 var __interactionService services.InteractionService
+var __mediaService services.MediaService
 
 func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 	for _, dependency := range dependencies {
@@ -27,10 +28,12 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 			__artistService = dependency.(services.ArtistService)
 		case services.InteractionService:
 			__interactionService = dependency.(services.InteractionService)
+		case services.MediaService:
+			__mediaService = dependency.(services.MediaService)
 		}
 	}
 
-	songHandler := NewSongHandler(__songService)
+	songHandler := NewSongHandler(__songService, __mediaService)
 	playListHandler := NewPlayListHandler(__playListService)
 	albumHandler := NewAlbumHandler(__albumService)
 	artistHandler := NewArtistHandler(__artistService)
@@ -52,6 +55,7 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 		songRouter.GET("/album/:id", songHandler.GetSongByAlbumID)
 		songRouter.GET("/artist/:id", songHandler.GetSongByArtistID)
 		songRouter.GET("/interactions/:id", songHandler.GetSongLikedByUserID)
+		songRouter.POST("/add", songHandler.AddSong)
 	}
 	playListRouter := v1.Group("/playlists")
 	{

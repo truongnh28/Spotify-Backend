@@ -6,12 +6,13 @@ import (
 	"github.com/cloudinary/cloudinary-go/v2"
 	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 	"github.com/golang/glog"
+	"spotify/config"
+	"spotify/dto"
 	"sync"
 )
 
 type CloudinaryAPI interface {
-	UploadImage(ctx context.Context, imagePath string) (*uploader.UploadResult, error)
-	UploadMusic(ctx context.Context, musicPath string) (*uploader.UploadResult, error)
+	Upload(ctx context.Context, in dto.UploadIn) (*uploader.UploadResult, error)
 }
 type cloudinaryAPI struct {
 	client *cloudinary.Cloudinary
@@ -20,13 +21,13 @@ type cloudinaryAPI struct {
 var cloudinaryInstance *cloudinaryAPI
 var cloudinaryMutex sync.Mutex
 
-func GetCloudinaryAPI() CloudinaryAPI {
+func GetCloudinaryAPI(config config.CloudinaryConfig) CloudinaryAPI {
 	if cloudinaryInstance != nil {
 		return cloudinaryInstance
 	}
 	cloudinaryMutex.Lock()
 	defer cloudinaryMutex.Unlock()
-	const cldUrl = "cloudinary://512616158545567:mClhxuKZ9F-EsP4Kjm_s5qccdvk@dbk0cmzcb"
+	var cldUrl = fmt.Sprintf("cloudinary://%s:%s@%s", config.APIKey, config.APISecret, config.Name)
 	var cld, err = cloudinary.NewFromURL(cldUrl)
 	if err != nil {
 		//log.Fatalf("Failed to intialize Cloudinary, %v", err)
@@ -38,17 +39,8 @@ func GetCloudinaryAPI() CloudinaryAPI {
 	return cloudinaryInstance
 }
 
-func (c *cloudinaryAPI) UploadImage(ctx context.Context, imagePath string) (*uploader.UploadResult, error) {
-	resp, err := c.client.Upload.Upload(ctx, imagePath, uploader.UploadParams{})
-	if err != nil {
-		glog.Errorln("Upload cloudinary fail: ", err)
-		return nil, err
-	}
-	return resp, nil
-}
-
-func (c *cloudinaryAPI) UploadMusic(ctx context.Context, musicPath string) (*uploader.UploadResult, error) {
-	resp, err := c.client.Upload.Upload(ctx, musicPath, uploader.UploadParams{})
+func (c *cloudinaryAPI) Upload(ctx context.Context, in dto.UploadIn) (*uploader.UploadResult, error) {
+	resp, err := c.client.Upload.Upload(ctx, in.File, uploader.UploadParams{})
 	if err != nil {
 		glog.Errorln("Upload cloudinary fail: ", err)
 		return nil, err

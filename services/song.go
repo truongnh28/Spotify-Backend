@@ -17,6 +17,7 @@ type SongService interface {
 	GetSongByArtistID(ctx context.Context, artistId uint) ([]dto.Song, common.SubReturnCode)
 	GetSongByAlbumID(ctx context.Context, albumId uint) ([]dto.Song, common.SubReturnCode)
 	GetSongLikedByUserID(ctx context.Context, userId uint) ([]dto.Song, common.SubReturnCode)
+	AddSong(ctx context.Context, songIn dto.Song) common.SubReturnCode
 }
 
 func NewSongService(songRepo repositories.SongRepository) SongService {
@@ -191,4 +192,13 @@ func (s *songServiceImpl) GetSongLikedByUserID(ctx context.Context, userId uint)
 		})
 	}
 	return resp, common.OK
+}
+
+func (s *songServiceImpl) AddSong(ctx context.Context, songIn dto.Song) common.SubReturnCode {
+	err := s.songRepo.AddSong(ctx, songIn)
+	if err != nil {
+		glog.Errorln("Add song service err: ", err)
+		return common.SystemError
+	}
+	return common.OK
 }
