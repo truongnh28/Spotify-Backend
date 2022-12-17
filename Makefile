@@ -32,3 +32,7 @@ dev-up: ## Run local environment for developing locally
 
 dev-down: ## Shutdown the local environment
 	$(DOCKER_COMPOSE) down
+
+dev-build:
+	@echo "==> Running unit tests with coverage <=="
+	@bash ./dev/build-image.sh

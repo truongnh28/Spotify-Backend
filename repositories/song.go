@@ -65,13 +65,22 @@ func (s *songRepositoryImpl) GetSongByName(ctx context.Context, name string) ([]
 	return song, nil
 }
 
-func (s *songRepositoryImpl) GetSongByPlayListID(ctx context.Context, id uint) ([]models.Song, error) {
+func (s *songRepositoryImpl) GetSongByPlayListID(ctx context.Context, playListId uint) ([]models.Song, error) {
 	var (
-		songs = make([]models.Song, 0)
-		db    = s.database.WithContext(ctx)
+		songs         = make([]models.Song, 0)
+		songIds       = make([]uint, 0)
+		playListSongs = make([]models.PlayListSong, 0)
+		db            = s.database.WithContext(ctx)
 	)
-
-	err := db.Model(&models.Song{}).Joins("inner join playlists_songs on playlists_songs.song_id = songs.id").Where("playlists_songs.id = ?", id).Find(&songs).Error
+	err := db.Model(&models.PlayListSong{}).Where("playlist_id = ?", playListId).Find(&playListSongs).Error
+	if err != nil {
+		glog.Errorln("GetSongByPlayListID Repository err: ", err)
+		return songs, err
+	}
+	for _, val := range playListSongs {
+		songIds = append(songIds, val.SongID)
+	}
+	err = db.Model(&models.Song{}).Where("id IN ?", songIds).Find(&songs).Error
 	if err != nil {
 		glog.Errorln("GetSongByPlayListID Repository err: ", err)
 		return songs, err

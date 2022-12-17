@@ -145,7 +145,7 @@ func (PlayList) TableName() string {
 }
 
 func (PlayListSong) TableName() string {
-	return "playlist_songs"
+	return "playlists_songs"
 }
 
 func (Song) TableName() string {
