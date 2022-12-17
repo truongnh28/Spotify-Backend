@@ -14,6 +14,8 @@ type PlayListService interface {
 	GetPlayListByID(ctx context.Context, id uint) (dto.PlayList, common.SubReturnCode)
 	GetPlayListByName(ctx context.Context, name string) ([]dto.PlayList, common.SubReturnCode)
 	GetPlayListByUserID(ctx context.Context, userId uint) ([]dto.PlayList, common.SubReturnCode)
+	AddPlayList(ctx context.Context, playListIn dto.PlayList) common.SubReturnCode
+	UpdatePlayList(ctx context.Context, playListIn dto.PlayList) common.SubReturnCode
 }
 
 func NewPlayListService(playListRepo repositories.PlayListRepository) PlayListService {
@@ -100,4 +102,22 @@ func (s *playListServiceImpl) GetPlayListByUserID(ctx context.Context, userId ui
 		})
 	}
 	return resp, common.OK
+}
+
+func (s *playListServiceImpl) AddPlayList(ctx context.Context, playListIn dto.PlayList) common.SubReturnCode {
+	err := s.playListRepo.AddPlayList(ctx, playListIn)
+	if err != nil {
+		glog.Errorln("Add playlist service err: ", err)
+		return common.SystemError
+	}
+	return common.OK
+}
+
+func (s *playListServiceImpl) UpdatePlayList(ctx context.Context, playListIn dto.PlayList) common.SubReturnCode {
+	err := s.playListRepo.UpdatePlayList(ctx, playListIn)
+	if err != nil {
+		glog.Errorln("Update playlist service err: ", err)
+		return common.SystemError
+	}
+	return common.OK
 }
