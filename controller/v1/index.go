@@ -10,6 +10,7 @@ var __authenService services.AuthenService
 var __playListService services.PlayListService
 var __albumService services.AlbumService
 var __artistService services.ArtistService
+var __interactionService services.InteractionService
 
 func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 	for _, dependency := range dependencies {
@@ -24,7 +25,8 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 			__albumService = dependency.(services.AlbumService)
 		case services.ArtistService:
 			__artistService = dependency.(services.ArtistService)
-
+		case services.InteractionService:
+			__interactionService = dependency.(services.InteractionService)
 		}
 	}
 
@@ -32,6 +34,7 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 	playListHandler := NewPlayListHandler(__playListService)
 	albumHandler := NewAlbumHandler(__albumService)
 	artistHandler := NewArtistHandler(__artistService)
+	interactionHandler := NewInteractionHandler(__interactionService)
 	v1 := g.Group("/v1")
 	//v1.Use(middleware.HTTPAuthentication)
 	// Authen
@@ -68,5 +71,10 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 		artistRouter.GET("", artistHandler.GetAll)
 		artistRouter.GET("/id/:id", artistHandler.GetArtistByID)
 		artistRouter.GET("/name/:name", artistHandler.GetArtistByName)
+	}
+	interactionRouter := v1.Group("/interaction")
+	{
+		interactionRouter.POST("/add/:user_id/:song_id", interactionHandler.AddInteraction)
+		interactionRouter.POST("/remove/:user_id/:song_id", interactionHandler.RemoveInteraction)
 	}
 }

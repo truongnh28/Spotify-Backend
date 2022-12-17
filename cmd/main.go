@@ -55,6 +55,7 @@ func main() {
 	playListRepository := repositories.NewPlayListRepository(db)
 	artistRepository := repositories.NewArtistRepository(db)
 	albumRepository := repositories.NewAlbumRepository(db)
+	interactionRepository := repositories.NewInteractionRepository(db)
 	// Init Service
 	//memoryCache := cache.NewMemoryCache()
 	redisCache := cache.NewServerCacheRedis(jedis)
@@ -64,6 +65,7 @@ func main() {
 	playListService := services.NewPlayListService(playListRepository)
 	artistService := services.NewArtistService(artistRepository)
 	albumService := services.NewAlbumService(albumRepository)
+	interactionService := services.NewInteractionService(interactionRepository)
 	// Init w
 	gin.SetMode(gin.TestMode)
 	router := gin.Default()
@@ -85,6 +87,7 @@ func main() {
 		playListService,
 		artistService,
 		albumService,
+		interactionService,
 	)
 	glog.Infof("runing on port: %d ", 8080)
 	err = router.Run(":8080")
