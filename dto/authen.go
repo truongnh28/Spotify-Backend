@@ -11,6 +11,7 @@ type LoginResponseData struct {
 }
 
 type Account struct {
+	UserId   uint   `json:"user_id,omitempty"`
 	Username string `json:"username,omitempty"`
 	Email    string `json:"email,omitempty"`
 	Code     string `json:"code,omitempty"`
