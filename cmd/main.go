@@ -23,7 +23,6 @@ import (
 	"spotify/models"
 	"spotify/repositories"
 	"spotify/services"
-	"strings"
 	"time"
 )
 
@@ -92,25 +91,14 @@ func main() {
 }
 
 func getRedisClient() cache.RedisClient {
-	if viper.GetBool("app.redis.usecluster") {
-		redisClient := redis.NewClusterClient(&redis.ClusterOptions{
-			Addrs:    strings.Split(viper.GetString("app.redis.cluster.url"), ";"),
-			Password: viper.GetString("app.redis.cluster.password"),
-		})
-		if err := redisClient.Ping(context.Background()).Err(); err != nil {
-			panic(fmt.Errorf("unable to connect to redis cluster: %v", err.Error()))
-		}
-		return cache.NewRedisClusterClient(redisClient)
-	} else {
-		redisClient := redis.NewClient(&redis.Options{
-			Addr:     viper.GetString("app.redis.single.url"),
-			Password: viper.GetString("app.redis.single.password"),
-		})
-		if err := redisClient.Ping(context.Background()).Err(); err != nil {
-			panic(fmt.Errorf("unable to connect to redis: %v", err.Error()))
-		}
-		return cache.NewRedisSingleClient(redisClient)
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%s", viper.GetString("app.redis.url"), viper.GetString("app.redis.port")),
+		Password: viper.GetString("app.redis.single.password"),
+	})
+	if err := redisClient.Ping(context.Background()).Err(); err != nil {
+		panic(fmt.Errorf("unable to connect to redis: %v", err.Error()))
 	}
+	return cache.NewRedisSingleClient(redisClient)
 }
 
 func getDatabaseConnector() *gorm.DB {
