@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/golang/glog"
 	"gorm.io/gorm"
+	"spotify/dto"
 	"spotify/models"
 )
 
@@ -13,6 +14,8 @@ type AlbumRepository interface {
 	GetAlbumByID(ctx context.Context, id uint) (models.Album, error)
 	GetAlbumByName(ctx context.Context, name string) ([]models.Album, error)
 	GetAlbumByArtistID(ctx context.Context, artistId uint) ([]models.Album, error)
+	AddAlbum(ctx context.Context, albumIn dto.Album) error
+	UpdateAlbum(ctx context.Context, albumIn dto.Album) error
 }
 
 type albumRepositoryImpl struct {
@@ -70,4 +73,39 @@ func (s *albumRepositoryImpl) GetAlbumByArtistID(ctx context.Context, artistId u
 		return albums, err
 	}
 	return albums, nil
+}
+
+func (s *albumRepositoryImpl) AddAlbum(ctx context.Context, albumIn dto.Album) error {
+	var (
+		album = models.Album{
+			Name:     albumIn.Name,
+			ArtistID: albumIn.ArtistID,
+			CoverImg: albumIn.CoverImg,
+		}
+		db = s.database.WithContext(ctx)
+	)
+	err := db.Model(&models.Album{}).Create(&album).Error
+	if err != nil {
+		glog.Errorln("AddAlbum repository err: ", err)
+		return err
+	}
+	return nil
+}
+
+func (s *albumRepositoryImpl) UpdateAlbum(ctx context.Context, albumIn dto.Album) error {
+	var (
+		album = models.Album{
+			AlbumID:  albumIn.AlbumID,
+			Name:     albumIn.Name,
+			ArtistID: albumIn.ArtistID,
+			CoverImg: albumIn.CoverImg,
+		}
+		db = s.database.WithContext(ctx)
+	)
+	err := db.Model(&models.Album{}).Select("name", "cover_img").Where("id = ?", albumIn.AlbumID).Updates(&album).Error
+	if err != nil {
+		glog.Errorln("UpdateAlbum repository err: ", err)
+		return err
+	}
+	return nil
 }

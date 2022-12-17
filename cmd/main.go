@@ -36,13 +36,12 @@ func main() {
 	viper.SetConfigType("yaml")
 	viper.SetConfigName(configFile)
 	err := viper.ReadInConfig()
-	cldConfig := config.EnvCloudName()
 	if err != nil {
 		panic(fmt.Errorf("fatal error config file: %s", err))
 	}
 	// Init instance
 	jedis := getRedisClient()
-	cld := client.GetCloudinaryAPI(cldConfig)
+	cld := getCloudinaryClient()
 	//get config
 	db := getDatabaseConnector()
 	// Init Repository
@@ -95,7 +94,6 @@ func main() {
 }
 
 func getRedisClient() cache.RedisClient {
-
 	if viper.GetBool("app.redis.usecluster") {
 		redisClient := redis.NewClusterClient(&redis.ClusterOptions{
 			Addrs:    strings.Split(viper.GetString("app.redis.cluster.url"), ";"),
@@ -161,16 +159,15 @@ func getVersion(c *gin.Context) {
 	c.JSON(http.StatusOK, os.Getenv("image_tag"))
 }
 
-func getLDAPConfig() *config.LDAP {
-	return &config.LDAP{
-		Addr:        viper.GetString("app.ldap.addr"),
-		UseTls:      viper.GetBool("app.ldap.useTls"),
-		Username:    viper.GetString("app.ldap.username"),
-		Password:    viper.GetString("app.ldap.password"),
-		BaseDN:      viper.GetString("app.ldap.baseDN"),
-		ObjectClass: viper.GetString("app.ldap.objectClass"),
-		Timeout:     viper.GetInt64("app.ldap.timeout"),
+func getCloudinaryClient() client.CloudinaryAPI {
+	cldConfig := config.CloudinaryConfig{
+		Name:      viper.GetString("app.cloudinary.CLOUDINARY_CLOUD_NAME"),
+		APIKey:    viper.GetString("app.cloudinary.CLOUDINARY_API_KEY"),
+		APISecret: viper.GetString("app.cloudinary.CLOUDINARY_API_SECRET"),
+		Folder:    viper.GetString("app.cloudinary.CLOUDINARY_UPLOAD_FOLDER"),
 	}
+	cldClient := client.GetCloudinaryAPI(cldConfig)
+	return cldClient
 }
 
 func extractConfigPath() (string, string) {

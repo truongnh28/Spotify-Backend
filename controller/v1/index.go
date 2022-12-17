@@ -75,6 +75,8 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 		albumRouter.GET("", albumHandler.GetAll)
 		albumRouter.GET("/id/:id", albumHandler.GetAlbumByID)
 		albumRouter.GET("/name/:name", albumHandler.GetAlbumByName)
+		albumRouter.POST("/add", albumHandler.AddAlbum)
+		albumRouter.POST("/update", albumHandler.UpdateAlbum)
 	}
 	artistRouter := v1.Group("/artist")
 	{
@@ -82,6 +84,8 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 		artistRouter.GET("", artistHandler.GetAll)
 		artistRouter.GET("/id/:id", artistHandler.GetArtistByID)
 		artistRouter.GET("/name/:name", artistHandler.GetArtistByName)
+		artistRouter.POST("/add", artistHandler.AddArtist)
+		artistRouter.POST("/update", artistHandler.UpdateArtist)
 	}
 	interactionRouter := v1.Group("/interaction")
 	{
