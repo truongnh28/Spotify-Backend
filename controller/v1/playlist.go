@@ -20,7 +20,7 @@ func NewPlayListHandler(playListService services.PlayListService) *PlayListHandl
 	}
 }
 
-func (s *PlayListHandlerImpl) GetAll(context *gin.Context) {
+func (s *PlayListHandlerImpl) GetAllPlayList(context *gin.Context) {
 	var (
 		out = &dto.PlayListResponse{}
 	)

@@ -2,8 +2,8 @@ package helper
 
 import (
 	"github.com/stretchr/testify/assert"
-	"gitlab.zalopay.vn/top/cicd/everest/dto"
-	"gitlab.zalopay.vn/top/cicd/everest/helper/common"
+	"spotify/dto"
+	"spotify/helper/common"
 	"testing"
 )
 
