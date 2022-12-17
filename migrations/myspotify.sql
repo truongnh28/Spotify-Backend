@@ -1,8 +1,8 @@
 -- MySQL dump 10.13  Distrib 8.0.31, for macos12.6 (x86_64)
 --
--- Host: 127.0.0.1    Database: myspotify
+-- Host: 13.215.228.202    Database: myspotify
 -- ------------------------------------------------------
--- Server version	8.0.30
+-- Server version	8.0.31
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -115,14 +115,13 @@ DROP TABLE IF EXISTS `interactions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `interactions` (
-                                `id` bigint unsigned NOT NULL AUTO_INCREMENT,
                                 `user_id` int NOT NULL,
                                 `song_id` int NOT NULL,
                                 `liked` tinyint(1) DEFAULT NULL,
                                 `created_at` date DEFAULT NULL,
                                 `uploaded_at` date DEFAULT NULL,
                                 `deleted_at` date DEFAULT NULL,
-                                UNIQUE KEY `interaction_ID` (`id`),
+                                PRIMARY KEY (`user_id`,`song_id`),
                                 KEY `user_ID` (`user_id`),
                                 KEY `song_ID` (`song_id`),
                                 CONSTRAINT `interactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `accounts` (`id`),
@@ -247,4 +246,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-12-12 21:01:22
+-- Dump completed on 2022-12-17 17:04:29

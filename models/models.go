@@ -30,15 +30,14 @@ type Artist struct {
 
 type Interaction struct {
 	*gorm.Model
-	InteractionID uint      `gorm:"column:id"`
-	UserID        uint      `gorm:"column:user_id"`
-	Users         Account   `gorm:"foreignKey:id;references:id"`
-	SongID        uint      `gorm:"column:song_id"`
-	Songs         Song      `gorm:"foreignKey:id;references:id"`
-	Liked         uint      `gorm:"column:liked"`
-	CreatedAt     time.Time `gorm:"column:created_at"`
-	UploadedAt    time.Time `gorm:"column:uploaded_at"`
-	DeletedAt     time.Time `gorm:"column:deleted_at"`
+	UserID     uint      `gorm:"column:user_id"`
+	Users      Account   `gorm:"foreignKey:id;references:id"`
+	SongID     uint      `gorm:"column:song_id"`
+	Songs      Song      `gorm:"foreignKey:id;references:id"`
+	Liked      uint      `gorm:"column:liked"`
+	CreatedAt  time.Time `gorm:"column:created_at"`
+	UploadedAt time.Time `gorm:"column:uploaded_at"`
+	DeletedAt  time.Time `gorm:"column:deleted_at"`
 }
 
 type PlayList struct {
