@@ -2,7 +2,6 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
-	"spotify/middleware"
 	"spotify/services"
 )
 
@@ -34,7 +33,7 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 	albumHandler := NewAlbumHandler(__albumService)
 	artistHandler := NewArtistHandler(__artistService)
 	v1 := g.Group("/v1")
-	v1.Use(middleware.HTTPAuthentication)
+	//v1.Use(middleware.HTTPAuthentication)
 	// Authen
 	authenRouter := v1.Group("/authen")
 	{

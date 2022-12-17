@@ -40,6 +40,13 @@ func main() {
 	}
 	// Init instance
 	jedis := getRedisClient()
+	//cloudinaryClient := client.GetCloudinaryAPI()
+	//resp, err := cloudinaryClient.UploadMusic(context.Background(), "./cmd/tusu.mp3")
+	//if err != nil {
+	//	fmt.Println("err: ", err)
+	//}
+	//e, _ := json.Marshal(resp)
+	//fmt.Println(string(e))
 	//get config
 	db := getDatabaseConnector()
 	// Init Repository
@@ -79,8 +86,8 @@ func main() {
 		artistService,
 		albumService,
 	)
-	glog.Infof("runing on port: %d ", 8082)
-	err = router.Run(":8082")
+	glog.Infof("runing on port: %d ", 8080)
+	err = router.Run(":8080")
 	if err != nil {
 		panic(fmt.Sprintf("Cannot start web application with error: %v", err))
 	}
@@ -168,11 +175,11 @@ func getLDAPConfig() *config.LDAP {
 func extractConfigPath() (string, string) {
 	var (
 		defaultConfig = "config/local.yml"
-		cp            = os.Getenv("CONFIG_PATH")
+		//cp            = os.Getenv("CONFIG_PATH")
 	)
-	if len(cp) > 0 {
-		defaultConfig = cp
-	}
+	//if len(cp) > 0 {
+	//	defaultConfig = cp
+	//}
 
 	configPath, configFile := path.Split(defaultConfig)
 	ext := path.Ext(configFile)
