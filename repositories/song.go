@@ -2,6 +2,8 @@ package repositories
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"github.com/golang/glog"
 	"gorm.io/gorm"
 	"spotify/dto"
@@ -81,6 +83,9 @@ func (s *songRepositoryImpl) GetSongByPlayListID(ctx context.Context, playListId
 		glog.Errorln("GetSongByPlayListID Repository err: ", err)
 		return songs, err
 	}
+	e, _ := json.Marshal(playListSongs)
+	fmt.Println("log")
+	fmt.Println(string(e))
 	for _, val := range playListSongs {
 		songIds = append(songIds, val.SongID)
 	}
