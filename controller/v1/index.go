@@ -99,6 +99,6 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 	{
 		//interactionRouter.Use(middleware.HTTPAuthentication)
 		interactionRouter.POST("/add/:user_id/:song_id", interactionHandler.AddInteraction)
-		interactionRouter.DELETE("/remove/:user_id/:song_id", interactionHandler.RemoveInteraction)
+		interactionRouter.POST("/remove/:user_id/:song_id", interactionHandler.RemoveInteraction)
 	}
 }
