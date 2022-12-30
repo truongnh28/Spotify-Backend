@@ -93,7 +93,7 @@ func main() {
 func getRedisClient() cache.RedisClient {
 	redisClient := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%s", viper.GetString("app.redis.url"), viper.GetString("app.redis.port")),
-		Password: viper.GetString("app.redis.single.password"),
+		Password: viper.GetString("app.redis.password"),
 	})
 	if err := redisClient.Ping(context.Background()).Err(); err != nil {
 		panic(fmt.Errorf("unable to connect to redis: %v", err.Error()))

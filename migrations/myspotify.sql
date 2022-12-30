@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 8.0.31, for macos12.6 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.30, for Win64 (x86_64)
 --
--- Host: 13.215.228.202    Database: myspotify
+-- Host: 13.229.197.201    Database: myspotify
 -- ------------------------------------------------------
 -- Server version	8.0.31
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8mb4 */;
+/*!50503 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -33,7 +33,7 @@ CREATE TABLE `accounts` (
                             `status` longtext,
                             `deleted_at` datetime DEFAULT NULL,
                             PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,7 +42,7 @@ CREATE TABLE `accounts` (
 
 LOCK TABLES `accounts` WRITE;
 /*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
-INSERT INTO `accounts` VALUES (2,'truong','truong@gmail.com','$2a$14$olAQHp.vJvBxIOT1pdV2buB4jNfU/q4eJDLP/5bF2D7l9/dBgU4JO','2022-12-17 00:00:00','2022-12-17 18:15:58','Admin','Active',NULL),(3,'thanh','thanh@gmail.com','$2a$14$olAQHp.vJvBxIOT1pdV2buB4jNfU/q4eJDLP/5bF2D7l9/dBgU4JO','2022-12-18 01:37:35','2022-12-18 01:37:35','User','Active',NULL),(4,'nhon','nhon@gmail.com','$2a$14$olAQHp.vJvBxIOT1pdV2buB4jNfU/q4eJDLP/5bF2D7l9/dBgU4JO','2022-12-18 02:33:04','2022-12-18 02:33:04','User','Active',NULL);
+INSERT INTO `accounts` VALUES (2,'truong','truong@gmail.com','$2a$14$olAQHp.vJvBxIOT1pdV2buB4jNfU/q4eJDLP/5bF2D7l9/dBgU4JO','2022-12-17 00:00:00','2022-12-17 18:15:58','Admin','Active',NULL),(3,'thanh','thanh@gmail.com','$2a$14$olAQHp.vJvBxIOT1pdV2buB4jNfU/q4eJDLP/5bF2D7l9/dBgU4JO','2022-12-18 01:37:35','2022-12-18 01:37:35','User','Active',NULL),(4,'nhon','nhon@gmail.com','$2a$14$olAQHp.vJvBxIOT1pdV2buB4jNfU/q4eJDLP/5bF2D7l9/dBgU4JO','2022-12-18 02:33:04','2022-12-18 02:33:04','User','Active',NULL),(5,'han','han@gmail.com','$2a$14$j.Iho6hxBsa3MAPgBfKXi.Qt3G6ftrnttvAiuGOSVw9PsNYuGGtru','2022-12-23 09:56:40','2022-12-23 09:56:40','User','Active',NULL),(6,'chuong','chuong@gmail.com','$2a$14$PGYQEI1mrtKaeJLs/HwyMuMBC5I9s98A9g2nCUaMZCG8ziflyEwye','2022-12-23 10:26:21','2022-12-23 10:26:21','User','Active',NULL);
 /*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -126,7 +126,7 @@ CREATE TABLE `interactions` (
                                 KEY `song_ID` (`song_id`),
                                 CONSTRAINT `interactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `accounts` (`id`),
                                 CONSTRAINT `interactions_ibfk_2` FOREIGN KEY (`song_id`) REFERENCES `songs` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -135,7 +135,7 @@ CREATE TABLE `interactions` (
 
 LOCK TABLES `interactions` WRITE;
 /*!40000 ALTER TABLE `interactions` DISABLE KEYS */;
-INSERT INTO `interactions` VALUES (2,35,1,'2022-12-17 22:22:41','2022-12-17 22:22:41',NULL,2);
+INSERT INTO `interactions` VALUES (2,35,1,'2022-12-17 22:22:41','2022-12-23 08:33:37',NULL,2),(2,39,0,'2022-12-23 00:51:40','2022-12-23 16:50:44',NULL,3),(2,36,0,'2022-12-23 01:11:00','2022-12-23 17:13:06',NULL,4),(2,37,1,'2022-12-23 01:49:04','2022-12-23 17:36:22',NULL,9),(2,38,0,'2022-12-23 16:58:36','2022-12-23 17:12:43',NULL,10);
 /*!40000 ALTER TABLE `interactions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -196,7 +196,7 @@ CREATE TABLE `playlists_songs` (
 
 LOCK TABLES `playlists_songs` WRITE;
 /*!40000 ALTER TABLE `playlists_songs` DISABLE KEYS */;
-INSERT INTO `playlists_songs` VALUES (39,5,'2022-12-17 23:48:23','2022-12-17 23:50:54','2022-12-17 23:48:23');
+INSERT INTO `playlists_songs` VALUES (39,5,'2022-12-17 23:48:23',NULL,'2022-12-17 23:48:23');
 /*!40000 ALTER TABLE `playlists_songs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -247,4 +247,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-12-18  2:50:21
+-- Dump completed on 2022-12-24 16:24:08

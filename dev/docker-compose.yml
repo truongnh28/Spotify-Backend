@@ -6,31 +6,43 @@ services:
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     ports:
-      - '6380:6379'
+      - "6380:6379"
     networks:
       - spotify-network
-#  spotify-db:
-#    container_name: spotify-db
-#    image: mysql:8
-#    restart: always
-#    environment:
-#      MYSQL_ROOT_PASSWORD: 123456
-#      MYSQL_DATABASE: myspotify
-#    ports:
-#      - "3306:3306"
-#    networks:
-#      - spotify-network
-#    volumes:
-#      - /db:/var/lib/mysql
+  spotify-db:
+    container_name: spotify-db
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: myspotify
+    ports:
+      - "3307:3306"
+    networks:
+      - spotify-network
+    volumes:
+      - ./db:/var/lib/mysql
   spotify-be:
     depends_on:
-#      - spotify-db
+      - spotify-db
       - spotify-redis
     image: truongnh28/spotify
     container_name: spotify-be
     restart: always
     ports:
       - "8080:8080"
+    networks:
+      - spotify-network
+  spotify-fe:
+    depends_on:
+      - spotify-db
+      - spotify-redis
+      - spotify-be
+    image: truongnh28/spotify-fe
+    container_name: spotify-fe
+    restart: always
+    ports:
+      - "3000:3000"
     networks:
       - spotify-network
 networks:
