@@ -2,6 +2,7 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
+	"spotify/middleware"
 	"spotify/services"
 )
 
@@ -55,7 +56,7 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 	}
 	songRouter := v1.Group("/songs")
 	{
-		//songRouter.Use(middleware.HTTPAuthentication)
+		songRouter.Use(middleware.HTTPAuthentication)
 		songRouter.GET("", songHandler.GetAll)
 		songRouter.GET("/id/:id", songHandler.GetSongByID)
 		songRouter.GET("/name/:name", songHandler.GetSongByName)
@@ -69,7 +70,7 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 	}
 	playListRouter := v1.Group("/playlists")
 	{
-		//songRouter.Use(middleware.HTTPAuthentication)
+		songRouter.Use(middleware.HTTPAuthentication)
 		playListRouter.GET("", playListHandler.GetAllPlayList)
 		playListRouter.GET("/id/:id", playListHandler.GetPlayListByID)
 		playListRouter.GET("/name/:name", playListHandler.GetPlayListByName)
@@ -79,7 +80,7 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 	}
 	albumRouter := v1.Group("/albums")
 	{
-		//albumRouter.Use(middleware.HTTPAuthentication)
+		albumRouter.Use(middleware.HTTPAuthentication)
 		albumRouter.GET("", albumHandler.GetAll)
 		albumRouter.GET("/id/:id", albumHandler.GetAlbumByID)
 		albumRouter.GET("/name/:name", albumHandler.GetAlbumByName)
@@ -88,7 +89,7 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 	}
 	artistRouter := v1.Group("/artist")
 	{
-		//artistRouter.Use(middleware.HTTPAuthentication)
+		artistRouter.Use(middleware.HTTPAuthentication)
 		artistRouter.GET("", artistHandler.GetAll)
 		artistRouter.GET("/id/:id", artistHandler.GetArtistByID)
 		artistRouter.GET("/name/:name", artistHandler.GetArtistByName)
@@ -97,7 +98,7 @@ func InitRoutes(g *gin.RouterGroup, dependencies ...interface{}) {
 	}
 	interactionRouter := v1.Group("/interaction")
 	{
-		//interactionRouter.Use(middleware.HTTPAuthentication)
+		interactionRouter.Use(middleware.HTTPAuthentication)
 		interactionRouter.POST("/add/:user_id/:song_id", interactionHandler.AddInteraction)
 		interactionRouter.POST("/remove/:user_id/:song_id", interactionHandler.RemoveInteraction)
 	}
